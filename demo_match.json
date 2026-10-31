@@ -1,0 +1,597 @@
+{
+  "success": true,
+  "pager": {
+    "current_page": 1,
+    "max_page": 1,
+    "results_per_page": 100,
+    "total_results": 1
+  },
+  "metadata": {
+    "request_limit": null,
+    "request_remaining": null,
+    "request_reset_message": "Request limit is refreshed every hour."
+  },
+  "data": {
+    "id": 971951,
+    "home_player1_id": 75,
+    "home_player2_id": null,
+    "away_player1_id": 362,
+    "away_player2_id": null,
+    "unix_start_time": 1775999400,
+    "groundType": "clay",
+    "tournament_name": "Monte Carlo ATP",
+    "match_type": "single",
+    "json_final_score": [
+      {
+        "set1": {
+          "away": "7",
+          "home": "6"
+        }
+      },
+      {
+        "set2": {
+          "away": "6",
+          "home": "3"
+        }
+      },
+      {
+        "set1_tiebreak": {
+          "away": "7",
+          "home": "5"
+        }
+      }
+    ],
+    "season_master_id": 29972,
+    "tournament_master_id": 3745,
+    "unique_tournament_master_id": 34617,
+    "home_double_id": null,
+    "away_double_id": null,
+    "event_eta": "FINISHED",
+    "event_status": "FINISHED",
+    "h2h_id": 23803,
+    "winner": "away",
+    "home_player_names": "Carlos Alcaraz",
+    "away_player_names": "Jannik Sinner",
+    "match_stats": {
+      "match": {
+        "aces": {
+          "home": 3,
+          "away": 0
+        },
+        "double_faults": {
+          "home": 5,
+          "away": 2
+        },
+        "first_serve_percent": {
+          "home": 58,
+          "away": 51
+        },
+        "first_serve_points_won": {
+          "home": {
+            "pct": 58,
+            "won": 31,
+            "total": 53
+          },
+          "away": {
+            "pct": 66,
+            "won": 25,
+            "total": 38
+          }
+        },
+        "second_serve_points_won": {
+          "home": {
+            "pct": 56,
+            "won": 22,
+            "total": 39
+          },
+          "away": {
+            "pct": 65,
+            "won": 24,
+            "total": 37
+          }
+        },
+        "break_points_saved": {
+          "home": {
+            "won": 8,
+            "total": 11
+          },
+          "away": {
+            "won": 3,
+            "total": 5
+          }
+        },
+        "first_return_points_won": {
+          "home": {
+            "pct": 34,
+            "won": 13,
+            "total": 38
+          },
+          "away": {
+            "pct": 42,
+            "won": 22,
+            "total": 53
+          }
+        },
+        "second_return_points_won": {
+          "home": {
+            "pct": 35,
+            "won": 13,
+            "total": 37
+          },
+          "away": {
+            "pct": 44,
+            "won": 17,
+            "total": 39
+          }
+        },
+        "break_points_converted": {
+          "home": {
+            "won": 2,
+            "total": 5
+          },
+          "away": {
+            "won": 3,
+            "total": 11
+          }
+        },
+        "winners": {
+          "home": 20,
+          "away": 13
+        },
+        "unforced_errors": {
+          "home": 45,
+          "away": 38
+        },
+        "net_points_won": {
+          "home": {
+            "pct": 25,
+            "won": 1,
+            "total": 4
+          },
+          "away": {
+            "pct": 43,
+            "won": 3,
+            "total": 7
+          }
+        },
+        "service_points_won": {
+          "home": {
+            "pct": 57,
+            "won": 54,
+            "total": 94
+          },
+          "away": {
+            "pct": 65,
+            "won": 49,
+            "total": 75
+          }
+        },
+        "return_points_won": {
+          "home": {
+            "pct": 35,
+            "won": 26,
+            "total": 75
+          },
+          "away": {
+            "pct": 43,
+            "won": 40,
+            "total": 94
+          }
+        },
+        "total_points_won": {
+          "home": {
+            "pct": 47,
+            "won": 80,
+            "total": 169
+          },
+          "away": {
+            "pct": 53,
+            "won": 89,
+            "total": 169
+          }
+        },
+        "last_10_balls": {
+          "home": 2,
+          "away": 8
+        },
+        "match_points_saved": {
+          "home": 0,
+          "away": 0
+        },
+        "service_games_won": {
+          "home": {
+            "pct": 70,
+            "won": 7,
+            "total": 10
+          },
+          "away": {
+            "pct": 82,
+            "won": 9,
+            "total": 11
+          }
+        },
+        "return_games_won": {
+          "home": {
+            "pct": 18,
+            "won": 2,
+            "total": 11
+          },
+          "away": {
+            "pct": 30,
+            "won": 3,
+            "total": 10
+          }
+        },
+        "total_games_won": {
+          "home": {
+            "pct": 43,
+            "won": 9,
+            "total": 21
+          },
+          "away": {
+            "pct": 57,
+            "won": 12,
+            "total": 21
+          }
+        }
+      },
+      "set1": {
+        "aces": {
+          "home": 1,
+          "away": 0
+        },
+        "double_faults": {
+          "home": 3,
+          "away": 2
+        },
+        "first_serve_percent": {
+          "home": 57,
+          "away": 53
+        },
+        "first_serve_points_won": {
+          "home": {
+            "pct": 68,
+            "won": 19,
+            "total": 28
+          },
+          "away": {
+            "pct": 71,
+            "won": 17,
+            "total": 24
+          }
+        },
+        "second_serve_points_won": {
+          "home": {
+            "pct": 57,
+            "won": 12,
+            "total": 21
+          },
+          "away": {
+            "pct": 62,
+            "won": 13,
+            "total": 21
+          }
+        },
+        "break_points_saved": {
+          "home": {
+            "won": 3,
+            "total": 4
+          },
+          "away": {
+            "won": 0,
+            "total": 1
+          }
+        },
+        "first_return_points_won": {
+          "home": {
+            "pct": 29,
+            "won": 7,
+            "total": 24
+          },
+          "away": {
+            "pct": 32,
+            "won": 9,
+            "total": 28
+          }
+        },
+        "second_return_points_won": {
+          "home": {
+            "pct": 38,
+            "won": 8,
+            "total": 21
+          },
+          "away": {
+            "pct": 43,
+            "won": 9,
+            "total": 21
+          }
+        },
+        "break_points_converted": {
+          "home": {
+            "won": 1,
+            "total": 1
+          },
+          "away": {
+            "won": 1,
+            "total": 4
+          }
+        },
+        "winners": {
+          "home": 11,
+          "away": 8
+        },
+        "unforced_errors": {
+          "home": 23,
+          "away": 21
+        },
+        "net_points_won": {
+          "home": {
+            "pct": 50,
+            "won": 1,
+            "total": 2
+          },
+          "away": {
+            "pct": 50,
+            "won": 2,
+            "total": 4
+          }
+        },
+        "service_points_won": {
+          "home": {
+            "pct": 63,
+            "won": 31,
+            "total": 49
+          },
+          "away": {
+            "pct": 67,
+            "won": 30,
+            "total": 45
+          }
+        },
+        "return_points_won": {
+          "home": {
+            "pct": 33,
+            "won": 15,
+            "total": 45
+          },
+          "away": {
+            "pct": 37,
+            "won": 18,
+            "total": 49
+          }
+        },
+        "total_points_won": {
+          "home": {
+            "pct": 49,
+            "won": 46,
+            "total": 94
+          },
+          "away": {
+            "pct": 51,
+            "won": 48,
+            "total": 94
+          }
+        },
+        "match_points_saved": {
+          "home": 0,
+          "away": 0
+        },
+        "service_games_won": {
+          "home": {
+            "pct": 83,
+            "won": 5,
+            "total": 6
+          },
+          "away": {
+            "pct": 83,
+            "won": 5,
+            "total": 6
+          }
+        },
+        "return_games_won": {
+          "home": {
+            "pct": 17,
+            "won": 1,
+            "total": 6
+          },
+          "away": {
+            "pct": 17,
+            "won": 1,
+            "total": 6
+          }
+        },
+        "total_games_won": {
+          "home": {
+            "pct": 50,
+            "won": 6,
+            "total": 12
+          },
+          "away": {
+            "pct": 50,
+            "won": 6,
+            "total": 12
+          }
+        }
+      },
+      "set2": {
+        "aces": {
+          "home": 2,
+          "away": 0
+        },
+        "double_faults": {
+          "home": 2,
+          "away": 0
+        },
+        "first_serve_percent": {
+          "home": 58,
+          "away": 47
+        },
+        "first_serve_points_won": {
+          "home": {
+            "pct": 48,
+            "won": 12,
+            "total": 25
+          },
+          "away": {
+            "pct": 57,
+            "won": 8,
+            "total": 14
+          }
+        },
+        "second_serve_points_won": {
+          "home": {
+            "pct": 56,
+            "won": 10,
+            "total": 18
+          },
+          "away": {
+            "pct": 69,
+            "won": 11,
+            "total": 16
+          }
+        },
+        "break_points_saved": {
+          "home": {
+            "won": 5,
+            "total": 7
+          },
+          "away": {
+            "won": 3,
+            "total": 4
+          }
+        },
+        "first_return_points_won": {
+          "home": {
+            "pct": 43,
+            "won": 6,
+            "total": 14
+          },
+          "away": {
+            "pct": 52,
+            "won": 13,
+            "total": 25
+          }
+        },
+        "second_return_points_won": {
+          "home": {
+            "pct": 31,
+            "won": 5,
+            "total": 16
+          },
+          "away": {
+            "pct": 44,
+            "won": 8,
+            "total": 18
+          }
+        },
+        "break_points_converted": {
+          "home": {
+            "won": 1,
+            "total": 4
+          },
+          "away": {
+            "won": 2,
+            "total": 7
+          }
+        },
+        "winners": {
+          "home": 9,
+          "away": 5
+        },
+        "unforced_errors": {
+          "home": 22,
+          "away": 17
+        },
+        "net_points_won": {
+          "home": {
+            "pct": 0,
+            "won": 0,
+            "total": 2
+          },
+          "away": {
+            "pct": 33,
+            "won": 1,
+            "total": 3
+          }
+        },
+        "service_points_won": {
+          "home": {
+            "pct": 51,
+            "won": 23,
+            "total": 45
+          },
+          "away": {
+            "pct": 63,
+            "won": 19,
+            "total": 30
+          }
+        },
+        "return_points_won": {
+          "home": {
+            "pct": 37,
+            "won": 11,
+            "total": 30
+          },
+          "away": {
+            "pct": 49,
+            "won": 22,
+            "total": 45
+          }
+        },
+        "total_points_won": {
+          "home": {
+            "pct": 45,
+            "won": 34,
+            "total": 75
+          },
+          "away": {
+            "pct": 55,
+            "won": 41,
+            "total": 75
+          }
+        },
+        "match_points_saved": {
+          "home": 0,
+          "away": 0
+        },
+        "service_games_won": {
+          "home": {
+            "pct": 50,
+            "won": 2,
+            "total": 4
+          },
+          "away": {
+            "pct": 80,
+            "won": 4,
+            "total": 5
+          }
+        },
+        "return_games_won": {
+          "home": {
+            "pct": 20,
+            "won": 1,
+            "total": 5
+          },
+          "away": {
+            "pct": 50,
+            "won": 2,
+            "total": 4
+          }
+        },
+        "total_games_won": {
+          "home": {
+            "pct": 33,
+            "won": 3,
+            "total": 9
+          },
+          "away": {
+            "pct": 67,
+            "won": 6,
+            "total": 9
+          }
+        }
+      }
+    }
+  },
+  "message": "Usage of the API is bound to our Terms of Use : https://tennisstats.com/api/documentations/terms-of-use-and-legal"
+}

@@ -1,0 +1,29 @@
+{
+  "features": [
+    "log_rank_diff",
+    "age_diff",
+    "qualifier_diff",
+    "rank_x_wta",
+    "rank_x_clay",
+    "rank_x_grass",
+    "rank_x_bo5",
+    "rank_x_late",
+    "prior_hours_diff",
+    "prior_matches_diff"
+  ],
+  "coefficients": [
+    -0.37806291675907006,
+    -0.01789312140067812,
+    -0.02631459468634053,
+    -0.14709717744239417,
+    0.0372022055780309,
+    0.09845964282191012,
+    -0.2847155222132687,
+    -0.046292280447638307,
+    -0.10385425580846708,
+    0.10556613654484326
+  ],
+  "cutoff": "2026-10-22 snapshot",
+  "C": 0.01,
+  "valid_scope": "ATP/WTA standard knockout singles; both have prior main-draw matches in current event"
+}

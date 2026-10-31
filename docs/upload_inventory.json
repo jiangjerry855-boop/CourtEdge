@@ -1,0 +1,431 @@
+{
+  "snapshot": "2026-10-22",
+  "source_site_commit": "28f1cb78fab38d27561c90957b762961689378c9",
+  "files": [
+    {
+      "path": ".gitignore",
+      "bytes": 165,
+      "sha256": "f9629f162bc3654470594302c89e595477e9afa880b368d97851f6928eaf6530"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6269,
+      "sha256": "89653e466697b5cc7cc5770c57b389edca345e1c10014c22e392b4f9b086a087"
+    },
+    {
+      "path": "analysis.py",
+      "bytes": 14343,
+      "sha256": "ba54dee79c85342db6c1ba57139959fe75c8dc95d0fa550b78e76aab51d50fdf"
+    },
+    {
+      "path": "demo_match.json",
+      "bytes": 12324,
+      "sha256": "decc7f401907d4f21d7cfa96d48de3fc9c4fc1a97eda3c5ab2321e2fdd7edd2b"
+    },
+    {
+      "path": "docs/original_research_notes_zh.txt",
+      "bytes": 5225,
+      "sha256": "0543f4afe41d34bb4d502a4715b57216527e54cf79ae636ef1cd149b8a2bd9c2"
+    },
+    {
+      "path": "fixtures_2026-10-23.json",
+      "bytes": 954,
+      "sha256": "513370155ad73f51b078a196b5352f35f43c77085302b29635dbfa52d24623cb"
+    },
+    {
+      "path": "kaggle_run.json",
+      "bytes": 443,
+      "sha256": "b3d84f65ff37e762d1b459186ebc4987c74616a42dd88e8c8b54fdba1683a674"
+    },
+    {
+      "path": "notebook_validation.json",
+      "bytes": 154,
+      "sha256": "9db5c712ab2e617d0b1a7e5f73a24a833db8de4885798606d15edf1f58a721cb"
+    },
+    {
+      "path": "notebooks/tennis_fatigue_2026.ipynb",
+      "bytes": 462942,
+      "sha256": "633deeb2b5f1b878e610f9d6dfc9c32a350571162b5fe0008ad69aef0647b268"
+    },
+    {
+      "path": "outputs/adjusted_associations.csv",
+      "bytes": 207,
+      "sha256": "a4a7ca0e43efd187a9358e3c4f501ccd63ef7f949096a689687007fd34792a99"
+    },
+    {
+      "path": "outputs/final_models.json",
+      "bytes": 936,
+      "sha256": "43fb7ba86281d31773e0e183c5a19259afcf000166e8b089b492a0e914234f68"
+    },
+    {
+      "path": "outputs/kaggle_summary.json",
+      "bytes": 1608,
+      "sha256": "5c71be5edc998d6ba7214a78589a34d922b02d36a0d2fdae6aa6520beb3659a5"
+    },
+    {
+      "path": "outputs/matches_2026.csv",
+      "bytes": 1636529,
+      "sha256": "38ca29b5f5a7955d6e1a934130ff2b7a4159868fc445d2ee2c44af0ac97dc841"
+    },
+    {
+      "path": "outputs/model_metrics.csv",
+      "bytes": 235,
+      "sha256": "2ad3e7a941979c9c81dd61fafbc9d8f74f18e48271047f2f645184289fde07e9"
+    },
+    {
+      "path": "outputs/model_parameters.json",
+      "bytes": 659,
+      "sha256": "7c5bb883960682cfab29bd7102f3266954057ca71ed028442df6d45ca96c84c9"
+    },
+    {
+      "path": "outputs/player_statistics_2026.csv",
+      "bytes": 35623,
+      "sha256": "baeddde2184beb2c5cbf33fec7b4079770bda3f292d51a417527639453e7344f"
+    },
+    {
+      "path": "outputs/prematch_features.csv",
+      "bytes": 1789755,
+      "sha256": "c885beb3adba4858fdbf382cbfae397789373660b83ce624b01c6e3c4ef25f18"
+    },
+    {
+      "path": "outputs/results.png",
+      "bytes": 62169,
+      "sha256": "9bd91b231afb63fc10234ef406f610e0801b1c7039f8a9644b44994f78bd52ac"
+    },
+    {
+      "path": "outputs/sample_exclusions.csv",
+      "bytes": 477761,
+      "sha256": "f85703476dc68dc7820de9e25404b377f21a141641ce670482ee6959283a62f4"
+    },
+    {
+      "path": "outputs/subgroup_metrics.csv",
+      "bytes": 405,
+      "sha256": "78c6c9ef33bfff839a9b2888ec4eef807bdfe678ddbacd9e4360d39849d4f5f4"
+    },
+    {
+      "path": "outputs/summary.json",
+      "bytes": 1631,
+      "sha256": "d48efa087837ede6265228511f6a7cbef74b620792af9b60f3d71a9e6fdfa90b"
+    },
+    {
+      "path": "outputs/tennisstats_integration.json",
+      "bytes": 268,
+      "sha256": "2ffdbfa8f1eaa8e3b915935c6d8dfde2ed6eaff84f8369bdb275ad3f1992cb63"
+    },
+    {
+      "path": "outputs/test_predictions.csv",
+      "bytes": 84753,
+      "sha256": "56cd7e178070614cd9e213f23f5f6fc9caae666ac919ff0df3ab8b69f1faac52"
+    },
+    {
+      "path": "outputs/tour_statistics_2026.csv",
+      "bytes": 100,
+      "sha256": "b1de34c0d2dd8fd2c7f8a203d08cf08320c326cba058cd4f260e82dbd3c8756a"
+    },
+    {
+      "path": "outputs/upcoming_predictions_2026-10-23.csv",
+      "bytes": 2226,
+      "sha256": "d5e7ce893d3711bcd7c334d1b7534aad22dc0cae35f5700bd966cc3491f50a85"
+    },
+    {
+      "path": "outputs/validation_tuning.csv",
+      "bytes": 323,
+      "sha256": "bd3676c08b237419f5e2c3bea8a54162d37df2ca825de48e4322ce1fb6c0fa95"
+    },
+    {
+      "path": "predict_fixtures.py",
+      "bytes": 4499,
+      "sha256": "e0cf34cfb42b01e748a2081604867de3a34808e21758b0f792aa35a24c67b668"
+    },
+    {
+      "path": "raw/2026.csv",
+      "bytes": 546269,
+      "sha256": "178cc1de25b3efa2ea0ef9cb24c959947e8d9be6f40ee9a6c2b3484c8e1e65ca"
+    },
+    {
+      "path": "raw/2026_wta.csv",
+      "bytes": 491269,
+      "sha256": "f1a5a64cbda79bc8058e78db5ea0c77ac037874c3adad367c378d49b446bc354"
+    },
+    {
+      "path": "raw/manifest.json",
+      "bytes": 1080,
+      "sha256": "a6baffe7a2b2d33028597f0609d937ac7b1d5e6276a7fce50a88efe2f6ecb8a7"
+    },
+    {
+      "path": "raw/ongoing_tourneys.csv",
+      "bytes": 12693,
+      "sha256": "35d5a9ee42ce853f6bb3ac1f9f5c57a1665ab2e2300fa0131c90bea31bfd3ea5"
+    },
+    {
+      "path": "raw/wta_ongoing_tourneys.csv",
+      "bytes": 9435,
+      "sha256": "916c5a5d5116910734a3c1963651891ed58726aff99120c7db0a1c9c136af80b"
+    },
+    {
+      "path": "reports/Tennis_Fatigue_2026_Report.pdf",
+      "bytes": 147947,
+      "sha256": "338d4c4524821c1de10408dab03f9fc83065deb3777c586bba1db6f7ee751dfa"
+    },
+    {
+      "path": "reports/tennis_report_2026_zh.html",
+      "bytes": 90228,
+      "sha256": "fe3a1d3ef669c2b136b724f31d65f08e521f2edc23e3094980eb3a0d252af062"
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 66,
+      "sha256": "8d4fb14581c300f19ac174259da47e19fe0d7de06b840d9f616c86903f1c78b3"
+    },
+    {
+      "path": "tennisstats_client.py",
+      "bytes": 5948,
+      "sha256": "13b3ce10238527cddd58f7d33cde100ec2daf44d79870b70ba6b2f60781aa307"
+    },
+    {
+      "path": "test_pipeline.py",
+      "bytes": 2267,
+      "sha256": "9e6b8bdca7870342b874b2e95b1a46a64e31d5b7f3a87f24b24b34da59444c59"
+    },
+    {
+      "path": "website/README.md",
+      "bytes": 736,
+      "sha256": "f8ee2dd8e609acab8bd0235a9aa953984ae9bc8b915d6c34dd4cf866e38d494b"
+    },
+    {
+      "path": "website/dist/app.js",
+      "bytes": 35356,
+      "sha256": "e3a845c4eddcd73edfaf81244af30447f9c6c3d30077209f1480461d7ecb86b5"
+    },
+    {
+      "path": "website/dist/data/downloads.json",
+      "bytes": 3557,
+      "sha256": "0036698523493893b72379640d8f725ce954d94a191b5cee3a3a1e6ce6c8f6cf"
+    },
+    {
+      "path": "website/dist/data/fixtures.json",
+      "bytes": 3569,
+      "sha256": "e22fb47de654c56d3b9a4e415c6c0cd7a4188d9ba9bab928b16390e76e2c4c65"
+    },
+    {
+      "path": "website/dist/data/kaggle_summary.json",
+      "bytes": 1608,
+      "sha256": "5c71be5edc998d6ba7214a78589a34d922b02d36a0d2fdae6aa6520beb3659a5"
+    },
+    {
+      "path": "website/dist/data/matches.json",
+      "bytes": 5425787,
+      "sha256": "a935a610eda75a6de02a7ddc1acf1bb85dac4e3c578c163ec8025cf0371fba02"
+    },
+    {
+      "path": "website/dist/data/model_parameters.json",
+      "bytes": 659,
+      "sha256": "7c5bb883960682cfab29bd7102f3266954057ca71ed028442df6d45ca96c84c9"
+    },
+    {
+      "path": "website/dist/data/models.json",
+      "bytes": 936,
+      "sha256": "43fb7ba86281d31773e0e183c5a19259afcf000166e8b089b492a0e914234f68"
+    },
+    {
+      "path": "website/dist/data/players.json",
+      "bytes": 189327,
+      "sha256": "86d7f918bed6db16cbc312f7d299516a0dd658d7b1078256f5b88c23837cf32e"
+    },
+    {
+      "path": "website/dist/data/summary.json",
+      "bytes": 1631,
+      "sha256": "d48efa087837ede6265228511f6a7cbef74b620792af9b60f3d71a9e6fdfa90b"
+    },
+    {
+      "path": "website/dist/data/tennisstats_integration.json",
+      "bytes": 268,
+      "sha256": "2ffdbfa8f1eaa8e3b915935c6d8dfde2ed6eaff84f8369bdb275ad3f1992cb63"
+    },
+    {
+      "path": "website/dist/downloads/CourtEdge_2026_Data.zip",
+      "bytes": 1637841,
+      "sha256": "afaf6a030fe220f8309789defa8f55f645edaeca299856ccb1811249007eb7e8"
+    },
+    {
+      "path": "website/dist/downloads/README.txt",
+      "bytes": 1029,
+      "sha256": "14e8cca92249e412c2cdca9e15e9af6d0905595aac4cac3c9b0bd4517c55956d"
+    },
+    {
+      "path": "website/dist/downloads/Tennis_Fatigue_2026_Report.pdf",
+      "bytes": 122974,
+      "sha256": "5e0d3d62bb45c169dad0e5befa853f3d14384eb6c79f2f0204337ac4611ab015"
+    },
+    {
+      "path": "website/dist/downloads/adjusted_associations.csv",
+      "bytes": 207,
+      "sha256": "a4a7ca0e43efd187a9358e3c4f501ccd63ef7f949096a689687007fd34792a99"
+    },
+    {
+      "path": "website/dist/downloads/analysis.py",
+      "bytes": 14343,
+      "sha256": "ba54dee79c85342db6c1ba57139959fe75c8dc95d0fa550b78e76aab51d50fdf"
+    },
+    {
+      "path": "website/dist/downloads/kaggle_run.json",
+      "bytes": 443,
+      "sha256": "b3d84f65ff37e762d1b459186ebc4987c74616a42dd88e8c8b54fdba1683a674"
+    },
+    {
+      "path": "website/dist/downloads/kaggle_summary.json",
+      "bytes": 1608,
+      "sha256": "5c71be5edc998d6ba7214a78589a34d922b02d36a0d2fdae6aa6520beb3659a5"
+    },
+    {
+      "path": "website/dist/downloads/matches_2026.csv",
+      "bytes": 1636529,
+      "sha256": "38ca29b5f5a7955d6e1a934130ff2b7a4159868fc445d2ee2c44af0ac97dc841"
+    },
+    {
+      "path": "website/dist/downloads/model_metrics.csv",
+      "bytes": 235,
+      "sha256": "2ad3e7a941979c9c81dd61fafbc9d8f74f18e48271047f2f645184289fde07e9"
+    },
+    {
+      "path": "website/dist/downloads/model_parameters.json",
+      "bytes": 659,
+      "sha256": "7c5bb883960682cfab29bd7102f3266954057ca71ed028442df6d45ca96c84c9"
+    },
+    {
+      "path": "website/dist/downloads/models.json",
+      "bytes": 936,
+      "sha256": "43fb7ba86281d31773e0e183c5a19259afcf000166e8b089b492a0e914234f68"
+    },
+    {
+      "path": "website/dist/downloads/player_statistics_2026.csv",
+      "bytes": 35623,
+      "sha256": "baeddde2184beb2c5cbf33fec7b4079770bda3f292d51a417527639453e7344f"
+    },
+    {
+      "path": "website/dist/downloads/predict_fixtures.py",
+      "bytes": 4499,
+      "sha256": "e0cf34cfb42b01e748a2081604867de3a34808e21758b0f792aa35a24c67b668"
+    },
+    {
+      "path": "website/dist/downloads/prematch_features.csv",
+      "bytes": 1789755,
+      "sha256": "c885beb3adba4858fdbf382cbfae397789373660b83ce624b01c6e3c4ef25f18"
+    },
+    {
+      "path": "website/dist/downloads/raw_2026.csv",
+      "bytes": 546269,
+      "sha256": "178cc1de25b3efa2ea0ef9cb24c959947e8d9be6f40ee9a6c2b3484c8e1e65ca"
+    },
+    {
+      "path": "website/dist/downloads/raw_2026_wta.csv",
+      "bytes": 491269,
+      "sha256": "f1a5a64cbda79bc8058e78db5ea0c77ac037874c3adad367c378d49b446bc354"
+    },
+    {
+      "path": "website/dist/downloads/raw_ongoing_tourneys.csv",
+      "bytes": 12693,
+      "sha256": "35d5a9ee42ce853f6bb3ac1f9f5c57a1665ab2e2300fa0131c90bea31bfd3ea5"
+    },
+    {
+      "path": "website/dist/downloads/raw_wta_ongoing_tourneys.csv",
+      "bytes": 9435,
+      "sha256": "916c5a5d5116910734a3c1963651891ed58726aff99120c7db0a1c9c136af80b"
+    },
+    {
+      "path": "website/dist/downloads/sample_exclusions.csv",
+      "bytes": 477761,
+      "sha256": "f85703476dc68dc7820de9e25404b377f21a141641ce670482ee6959283a62f4"
+    },
+    {
+      "path": "website/dist/downloads/source_manifest.json",
+      "bytes": 1080,
+      "sha256": "a6baffe7a2b2d33028597f0609d937ac7b1d5e6276a7fce50a88efe2f6ecb8a7"
+    },
+    {
+      "path": "website/dist/downloads/subgroup_metrics.csv",
+      "bytes": 405,
+      "sha256": "78c6c9ef33bfff839a9b2888ec4eef807bdfe678ddbacd9e4360d39849d4f5f4"
+    },
+    {
+      "path": "website/dist/downloads/summary.json",
+      "bytes": 1631,
+      "sha256": "d48efa087837ede6265228511f6a7cbef74b620792af9b60f3d71a9e6fdfa90b"
+    },
+    {
+      "path": "website/dist/downloads/tennis_fatigue_2026.ipynb",
+      "bytes": 462942,
+      "sha256": "633deeb2b5f1b878e610f9d6dfc9c32a350571162b5fe0008ad69aef0647b268"
+    },
+    {
+      "path": "website/dist/downloads/tennisstats_client.py",
+      "bytes": 5948,
+      "sha256": "13b3ce10238527cddd58f7d33cde100ec2daf44d79870b70ba6b2f60781aa307"
+    },
+    {
+      "path": "website/dist/downloads/tennisstats_integration.json",
+      "bytes": 268,
+      "sha256": "2ffdbfa8f1eaa8e3b915935c6d8dfde2ed6eaff84f8369bdb275ad3f1992cb63"
+    },
+    {
+      "path": "website/dist/downloads/test_pipeline.py",
+      "bytes": 2267,
+      "sha256": "9e6b8bdca7870342b874b2e95b1a46a64e31d5b7f3a87f24b24b34da59444c59"
+    },
+    {
+      "path": "website/dist/downloads/test_predictions.csv",
+      "bytes": 84753,
+      "sha256": "56cd7e178070614cd9e213f23f5f6fc9caae666ac919ff0df3ab8b69f1faac52"
+    },
+    {
+      "path": "website/dist/downloads/tour_statistics_2026.csv",
+      "bytes": 100,
+      "sha256": "b1de34c0d2dd8fd2c7f8a203d08cf08320c326cba058cd4f260e82dbd3c8756a"
+    },
+    {
+      "path": "website/dist/downloads/upcoming_predictions_2026-10-23.csv",
+      "bytes": 2226,
+      "sha256": "d5e7ce893d3711bcd7c334d1b7534aad22dc0cae35f5700bd966cc3491f50a85"
+    },
+    {
+      "path": "website/dist/downloads/validation_tuning.csv",
+      "bytes": 323,
+      "sha256": "bd3676c08b237419f5e2c3bea8a54162d37df2ca825de48e4322ce1fb6c0fa95"
+    },
+    {
+      "path": "website/dist/icon.svg",
+      "bytes": 304,
+      "sha256": "c85007955ca404f3eada1469e0f369cf50c9d319a74330ac608ecaa64b4df09b"
+    },
+    {
+      "path": "website/dist/index.html",
+      "bytes": 2497,
+      "sha256": "4c53818afdf08892d9c85748b0a3b102ef9d202024fea353833ff49ca555b9dc"
+    },
+    {
+      "path": "website/dist/model.js",
+      "bytes": 1967,
+      "sha256": "893285417cd5550b4156aca75bf4c06c4e6b973a6e9f841eb64587cb2c242061"
+    },
+    {
+      "path": "website/dist/style.css",
+      "bytes": 21650,
+      "sha256": "c3ae88ba3d90ff35b8f7a53d75bcde90fcee759a33191b4ca9d1c15d3a9ce283"
+    },
+    {
+      "path": "website/package.json",
+      "bytes": 64,
+      "sha256": "9e7c6909513aeed6f60db6fd6fb09527d3ef259fc60f61c6d3e38089e4f60e1c"
+    },
+    {
+      "path": "website/prepare_data.py",
+      "bytes": 6948,
+      "sha256": "3f7ba86199d5f6cc4fca7d0e3857cdf4f1fd12b49a60572fa07965ed6ecd5571"
+    },
+    {
+      "path": "website/test.mjs",
+      "bytes": 1749,
+      "sha256": "fd5253c2e42b59e0148467c24dd9e84abe8eeaed0d80b8c107764f0075e75429"
+    }
+  ]
+}

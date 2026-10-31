@@ -1,0 +1,14 @@
+{
+  "notebook_url": "https://www.kaggle.com/code/jerry871gws2/2026-tennis-fatigue-and-win-prediction",
+  "visibility": "Private",
+  "run_id": 361288222,
+  "version": 1,
+  "accelerator": "None",
+  "status": "successful",
+  "runtime_seconds": 55.7,
+  "outputs": "29 files, 3.61 MB",
+  "metrics_equal_to_local_atol": 1e-12,
+  "executed_code_cells": 6,
+  "all_code_cells_no_errors": true,
+  "source": "Kaggle UI and downloaded executed notebook"
+}

@@ -1,0 +1,60 @@
+2026 ATP/WTA 疲劳代理指标与胜率：可复现研究
+
+已完成：2026 年数据清洗、按时间划分训练/验证/测试、关联估计、逐场回测、4 场赛前预测、TennisStats API 示例校验。
+执行状态：本地与 Kaggle CPU 均已执行。Kaggle 私人 Notebook Version 1 于 55.7 秒成功完成；关键指标与本地一致。
+Kaggle 链接：https://www.kaggle.com/code/jerry871gws2/2026-tennis-fatigue-and-win-prediction
+
+快速复现
+1. 将 tennis_fatigue_2026.ipynb 导入 Kaggle 的私人 Notebook。
+2. 使用 CPU，Run All。无需 GPU，也无需联网即可复现冻结快照的全部训练结果。
+3. 默认只读取随 Notebook 内嵌的数据；不会自动购买服务、公开发布数据或请求付费 API。
+4. 如已有 TennisStats API key，将其保存在 Kaggle Secrets，名称 TENNISSTATS_API_KEY；启用 Notebook 最后一节的 RUN_FULL_API_EXPORT。
+   不要把 key 写进代码或聊天。完整历史导出需要账户 key，testkey 只允许官方演示 URL。
+5. 完整历史导出会写入 tennisstats_export/completed_matches.json。TennisStats 文档中的时间是计划开赛时间，不能当作实际结束时间。
+   文档列表接口不含比赛用时；未经核对不能据此直接计算精确休息小时或补零。跨来源的玩家 ID 不相同。
+
+本地运行
+python analysis.py
+python test_pipeline.py
+python predict_fixtures.py
+依赖：Python 3.11+、numpy、pandas、scikit-learn、matplotlib。验证环境 sklearn 1.8.0。
+
+研究口径
+- 数据：TennisMyLife 2026 ATP/WTA 与 ongoing 文件，2026-10-22 快照；不是整个 2026 年终数据。
+- API：已核对 TennisStats 官方演示比赛 971951（2026 Monte Carlo Sinner–Alcaraz），与 TML 的两盘、22 局及胜者相符。
+- 赛程/当前排名：TennisStats 2026-10-23 公开网页；4 场以完整姓名、当前赛事、排名及前一轮获胜记录交叉核对。
+- 统计表包含来源中正常打完的标准单打，含团体赛事的单打场次；主模型限淘汰赛且双方均有本届前序正赛。
+- ATP 日期常为比赛日，WTA 常为赛事开始日。主模型完全不用日期差计算休息，改用同届此前轮次的累计用时和已打场数。
+- 每场特征仅使用之前轮次。以稳定 ID 排列双方，避免 winner/loser 列泄漏标签；镜像训练确保交换双方后概率互补。
+- 基础模型：赛前排名对数差、年龄差、资格赛入围标识，排名差与巡回赛/场地/五盘制/后段轮次的交互。
+- 扩展模型：增加双方此前累计小时差及比赛场数差。盘数、局数导出供审查，但不作为本次主模型参数。
+- 一月至六月训练，七月至八月验证，九月起赛事测试；前两段留出 21 天赛事结束缓冲，跨界赛事不进入较早时段。
+- 不随机拆分、不用目标比赛时长/比分/全年事后统计作特征。C 只在验证集选择；测试集不调参。
+- 测试差异采用赛事分组 bootstrap 3000 次；系数区间采用开发集赛事分组 bootstrap 500 次，固定已选惩罚强度。
+- 未来预测在评估结束后使用全部合格的 2026 快照重新拟合；不会把这些重拟合概率当成测试表现。
+
+解读
+更长累计用时与更低胜算有关，但未证实负荷能改善未见比赛预测，也不能建立疲劳的因果效应。
+用时只是代理指标；此前对手强弱、伤病、休息、旅行、睡眠、训练量、双打和资格赛负荷尚未完整控制。
+排除退赛、弃权和缺失用时，可能造成选择偏差。bootstrap 区间是本探索性惩罚模型的区间，不是因果置信区间。
+预测仅适用于本模型口径的正常完赛单打；时间已过的 10 月 23 日预测属于冻结存档，需更新赛程和历史再用于下一场。
+
+来源及使用
+TennisMyLife: https://stats.tennismylife.org/tennis-match-database
+TML 原作者说明：https://github.com/Tennismylife/TML-Database
+TennisStats: https://tennisstats.com/
+官方 API 文档：https://tennisstats.com/api/documentations
+官方 Matches List：https://tennisstats.com/api/documentations/matches-list
+本包用于用户私人研究。TML 网站标注 MIT，原仓库另列非商业/原始数据再分发限制，使用较保守的私人研究口径；不要直接公开发布内嵌原始数据。
+来源链接、下载时间和文件 SHA256 在 raw/manifest.json。付费 TennisStats 原始数据亦应留在私人工作区。
+
+文件
+analysis.py：清洗、赛前特征、训练评估、关联区间与汇总。
+tennisstats_client.py：已验证官方 demo、分页、密钥安全读取和账号历史导出。
+predict_fixtures.py：TennisStats 赛程与 TML 历史连接及冻结预测。
+test_pipeline.py：时间泄漏、交换对称性、比分和 API schema 校验。
+outputs/test_predictions.csv：174 场独立测试概率和实际结果。
+outputs/upcoming_predictions_2026-10-23.csv：4 场冻结赛前预测、两种模型概率和负荷输入。
+outputs/sample_exclusions.csv：逐场主样本纳入/排除原因。
+outputs/prematch_features.csv：可审计的赛前特征。
+outputs/model_parameters.json：全部合格 2026 数据重拟合后的扩展模型参数。

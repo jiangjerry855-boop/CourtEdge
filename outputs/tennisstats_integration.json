@@ -1,0 +1,11 @@
+{
+  "official_api_demo_reconciled": true,
+  "tennisstats_match_id": 971951,
+  "tml_event": "ATP:2026-410",
+  "sets": 2,
+  "games": 22,
+  "tml_minutes": 135.0,
+  "full_tennisstats_history_loaded": false,
+  "fixture_rows_joined": 4,
+  "provider_ids_are_distinct": true
+}

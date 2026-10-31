@@ -1,0 +1,34 @@
+[
+  {
+    "name": "2026_wta.csv",
+    "url": "https://stats.tennismylife.org/data/2026_wta.csv",
+    "size": 491266,
+    "mtime": "2026-10-22T18:14:46.563Z",
+    "sha256": "f1a5a64cbda79bc8058e78db5ea0c77ac037874c3adad367c378d49b446bc354",
+    "bytes": 491269
+  },
+  {
+    "name": "2026.csv",
+    "url": "https://stats.tennismylife.org/data/2026.csv",
+    "size": 546324,
+    "mtime": "2026-10-22T19:02:57.538Z",
+    "sha256": "178cc1de25b3efa2ea0ef9cb24c959947e8d9be6f40ee9a6c2b3484c8e1e65ca",
+    "bytes": 546269
+  },
+  {
+    "name": "ongoing_tourneys.csv",
+    "url": "https://stats.tennismylife.org/data/ongoing_tourneys.csv",
+    "size": 12162,
+    "mtime": "2026-10-22T18:30:09.165Z",
+    "sha256": "35d5a9ee42ce853f6bb3ac1f9f5c57a1665ab2e2300fa0131c90bea31bfd3ea5",
+    "bytes": 12693
+  },
+  {
+    "name": "wta_ongoing_tourneys.csv",
+    "url": "https://stats.tennismylife.org/data/wta_ongoing_tourneys.csv",
+    "size": 9435,
+    "mtime": "2026-10-22T19:40:16.059Z",
+    "sha256": "916c5a5d5116910734a3c1963651891ed58726aff99120c7db0a1c9c136af80b",
+    "bytes": 9435
+  }
+]

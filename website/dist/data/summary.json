@@ -1,0 +1,64 @@
+{
+  "audit": {
+    "raw_rows": 5055,
+    "duplicates": 1,
+    "season_2026_raw": 5054,
+    "completed_standard_2026": 4874,
+    "primary_samples": 1578,
+    "train": 887,
+    "validation": 187,
+    "test": 174,
+    "purged_boundary_samples": 330,
+    "purge_days": 21,
+    "test_events": 16,
+    "date_semantics": "mixed match-day / tournament start; event-round history only",
+    "cutoff": "2026-10-22 snapshot",
+    "ineligible_2026_knockout": 3233
+  },
+  "metrics": [
+    {
+      "model": "strength",
+      "C": 0.1,
+      "n": 174,
+      "accuracy": 0.6091954022988506,
+      "auc": 0.6712765957446809,
+      "log_loss": 0.6512330476932024,
+      "brier": 0.2297396898986329
+    },
+    {
+      "model": "strength_workload",
+      "C": 0.01,
+      "n": 174,
+      "accuracy": 0.6091954022988506,
+      "auc": 0.6602393617021276,
+      "log_loss": 0.6572026522390293,
+      "brier": 0.23231853049455384
+    }
+  ],
+  "comparison": {
+    "delta_log_loss": 0.005969604545826789,
+    "ci95": [
+      -0.00949333774838318,
+      0.027196103529183637
+    ],
+    "test_events": 16
+  },
+  "associations": [
+    {
+      "feature": "prior_hours_diff",
+      "odds_ratio": 0.8938428961782363,
+      "ci_low": 0.8251447830700395,
+      "ci_high": 0.9840595189731728,
+      "bootstrap_reps": 500
+    },
+    {
+      "feature": "prior_matches_diff",
+      "odds_ratio": 1.0835160121153589,
+      "ci_low": 0.8316579633172879,
+      "ci_high": 1.4834644221518698,
+      "bootstrap_reps": 500
+    }
+  ],
+  "source": "TennisMyLife snapshot; TennisStats demo is integration validation only",
+  "execution": "local Python; not a Kaggle cloud run"
+}

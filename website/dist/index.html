@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#123d31">
+  <meta name="description" content="Explore 2026 ATP and WTA match data, compare players, and estimate win probabilities with transparent, tested models.">
+  <title>CourtEdge | Tennis Intelligence</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a href="#main" class="skip">Skip to content</a>
+<aside class="sidebar">
+ <a class="brand" href="#overview"><img src="icon.svg" alt=""><span>Court<span>Edge</span><small>TENNIS INTELLIGENCE</small></span></a>
+ <div class="nav-label">WORKSPACE <span>2026</span></div>
+ <nav aria-label="Main navigation">
+   <a href="#overview" data-nav="overview"><span data-icon="grid"></span>Overview</a>
+   <a href="#matches" data-nav="matches"><span data-icon="list"></span>Match explorer</a>
+   <a href="#players" data-nav="players"><span data-icon="users"></span>Players</a>
+   <a href="#predict" data-nav="predict"><span data-icon="spark"></span>Prediction lab <span class="nav-pill">LAB</span></a>
+   <a href="#research" data-nav="research"><span data-icon="chart"></span>Research & data</a>
+ </nav>
+ <div class="sidebar-bottom"><div class="snapshot-dot"></div><strong>A season in focus</strong><p>ATP & WTA singles<br>Snapshot · 22 Oct 2026</p><a href="https://tennisstats.com/" target="_blank" rel="noopener">Explore TennisStats <span>↗</span></a></div>
+</aside>
+<div class="workspace">
+ <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> <strong id="breadcrumb">Overview</strong></div><div class="top-actions"><span class="snapshot-badge"><i></i> 2026 snapshot</span><a class="button small secondary" href="downloads/Tennis_Fatigue_2026_Report.pdf" download><span data-icon="download"></span>English report</a></div></header>
+ <main id="main" tabindex="-1"><div class="loading"><span class="spinner"></span>Loading the 2026 match snapshot…</div></main>
+ <footer class="footer"><span>CourtEdge · Evidence behind every estimate.</span><span>Data through 22 October 2026 · Research estimates</span></footer>
+</div>
+<dialog id="detail-dialog"><div id="dialog-content"></div><button class="close-dialog icon-button" aria-label="Close match details">×</button></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="app.js"></script>
+</body></html>
