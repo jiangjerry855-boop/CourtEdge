@@ -2,7 +2,9 @@
 
 An end-to-end tennis data science project: a 2026 ATP/WTA dataset, reproducible Python analysis, an executed Kaggle notebook, an English report, and an interactive website for exploring records and estimating match win probabilities.
 
-**Snapshot date: 22 October 2026.** The four example forecasts are dated 23 October 2026. These are historical research estimates, not a live prediction service or a complete 2026 season census.
+The [Prediction Lab](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site/#predict) uses a model fitted on 46,570 pre-2026 matches. Its interactive charts show matchup probabilities and monthly predicted versus observed win rates across 4,871 held-out 2026 matches. The latest included model and player ratings are dated November 5, 2026. The match explorer refreshes from TennisMyLife on demand.
+
+See the [website setup and source map](website/README.md) and [training instructions](website/training/README.md). The original workload study below uses the October 22 snapshot and four October 23 forecasts.
 
 - [Website](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site)
 - [Executed Kaggle notebook](https://www.kaggle.com/code/jerry871gws2/2026-tennis-fatigue-and-win-prediction) (private Kaggle notebook; access may be required)
@@ -52,7 +54,10 @@ Workload did **not** provide a reliable improvement in held-out prediction. The 
 ## Run the website
 
 ```bash
-python -m http.server 8000 --directory website/dist
+cd website
+node prepare-current.mjs
+node build.mjs
+node serve.mjs
 ```
 
 Open **http://localhost:8000**. Search/filter match records, view player statistics, inspect every match field, export CSVs, and compare baseline versus workload probabilities. The prediction form requires verified pre-match inputs. Missing workload is not silently imputed.

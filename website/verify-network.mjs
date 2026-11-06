@@ -1,0 +1,3 @@
+import assert from 'node:assert/strict';import worker from './dist/server/index.js';
+globalThis.caches={default:{match:async()=>null,put:async()=>{}}};const jobs=[];
+const response=await worker.fetch(new Request('https://local-verification.invalid/api/season'),{},{waitUntil:p=>jobs.push(p)});const data=await response.json();await Promise.all(jobs);assert.equal(data.status,'ok','Upstream refresh failed: '+data.error);assert.ok(data.matches.length>=5000);console.log(JSON.stringify({status:data.status,records:data.matches.length,last_success_at:data.last_success_at,sources:data.sources.map(x=>({name:x.name,last_modified:x.last_modified,sha256:x.sha256}))},null,2));
