@@ -1,7 +1,7 @@
 // Prepare the local fallback snapshot from the same four sources used by the hosted Worker.
 import fs from "node:fs/promises";
 import {createHash} from "node:crypto";
-import {SOURCES, ORIGIN, normalize, analyze} from "./live-data.js";
+import {SOURCES, ORIGIN, normalize, analyze, snapshotId} from "./live-data.js";
 
 const sources = await Promise.all(SOURCES.map(async name => {
   const url = ORIGIN + name;
@@ -14,7 +14,8 @@ const sources = await Promise.all(SOURCES.map(async name => {
 const season = normalize(Object.fromEntries(sources.map(source => [source.name, source.text])));
 const timestamp = new Date().toISOString();
 const snapshot = {...season, last_success_at: timestamp, last_attempt_at: timestamp,
-  status: "packaged", error: null, refresh_seconds: 900,
+  status: "packaged", data_origin: "packaged", snapshot_id: await snapshotId(sources),
+  last_origin_success_at: null, last_origin_attempt_at: null, error: null, error_stage: null, refresh_seconds: 900,
   sources: sources.map(({text, ...metadata}) => metadata)};
 
 await fs.mkdir("snapshots", {recursive: true});

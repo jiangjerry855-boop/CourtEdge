@@ -42,6 +42,8 @@ function playerFields(side) {
 export function showPredictionLab(main, model) {
   const report = model.report;
   const total = report.test.All;
+  const comparison = report.workload_ablation;
+  const modelId = report.selected + ' / ' + report.as_of;
   main.innerHTML = `<div class="page-head"><div><h1>Prediction lab</h1>
     <p>Estimate either player’s chance of winning a completed singles match. Choose a hypothetical matchup and verify the rankings for your match.</p></div></div>
     <section class="panel matchup-panel">
@@ -50,6 +52,7 @@ export function showPredictionLab(main, model) {
       <label>Format<select id="forecast-format"><option value="3">Best of 3</option><option value="5">Best of 5</option></select></label></div>
       <div class="matchup-pair">${playerFields("A")}${playerFields("B")}</div>
       <p class="footnote">Enter minutes only when both players have recorded durations in every earlier main-draw round they played in this event. Blank fields omit the workload adjustment.</p>
+      <p class="footnote"><strong>Model version · ${escape(modelId)}</strong><br>Coefficients fitted before ${escape(report.coefficients_fit_before)} · Player ratings through ${escape(report.as_of)}. Match-record updates do not refit this model.</p>
       <div class="matchup-result" aria-live="polite"></div>
       <section class="forecast-figure" id="scenario-figure"><h2>Win probability by player rank</h2>
         <p>Each point varies Player A’s rank while keeping the other matchup inputs fixed. The dots mark the rank entered above.</p>
@@ -60,11 +63,13 @@ export function showPredictionLab(main, model) {
       <p>Fitted on ${count(report.train)} matches from pre-2026 events. Model selection used ${count(report.selection.rank.n)} matches in 2025. The 2026 test covers ${count(total.selected.n)} matches across ${report.test_events} events. Earlier test results enter player ratings only when the event’s reporting window has passed.</p>
       <section class="forecast-figure"><div class="chart-heading"><h3>Did the favorites win as often as predicted?</h3>
         <label>Test sample <select id="chart-tour"><option value="All">Both tours</option><option>ATP</option><option>WTA</option></select></label></div>
-        <p>Each month compares the favorite’s average pre-match probability with how often the favorite won. November includes results through November 5.</p>
+        <p>Each month compares the favorite’s average pre-match probability with how often the favorite won. The backtest uses the snapshot through ${escape(report.as_of)}.</p>
         <div class="history-chart"></div></section>
       <div class="table-scroll"><table><thead><tr><th>2026 sample</th><th>Matches</th><th>Model accuracy</th><th>Rank-only accuracy</th><th>Model log loss</th><th>Rank-only log loss</th></tr></thead><tbody>
       ${Object.entries(report.test).map(([group,m])=>`<tr><th>${escape(group)}</th><td>${count(m.selected.n)}</td><td>${formatPercent(m.selected.accuracy)}</td><td>${formatPercent(m.rank.accuracy)}</td><td>${m.selected.log_loss.toFixed(4)}</td><td>${m.rank.log_loss.toFixed(4)}</td></tr>`).join("")}
       </tbody></table></div><p>Lower log loss rewards probabilities that put more weight on the observed winner. On 2025 validation matches, adding prior minutes changed log loss from ${report.selection.ratings.log_loss.toFixed(5)} to ${report.selection.ratings_workload.log_loss.toFixed(5)}. The difference was small.</p>
+      ${comparison ? `<h3>What did earlier-round workload add?</h3><p>On the same ${count(total.selected.n)} held-out matches, rankings and Elo alone had log loss ${comparison.ratings.log_loss.toFixed(5)}. Adding workload gave ${comparison.ratings_workload.log_loss.toFixed(5)}. The paired difference was ${comparison.log_loss_delta.toFixed(5)} (95% event-bootstrap interval ${comparison.log_loss_delta_ci95.map(x => x.toFixed(5)).join(' to ')}). Lower log loss is better.</p>` : ''}
+      <p>Earlier-round minutes for both players were available in ${count(report.test_workload_available)} of ${count(total.selected.n)} test matches. Other matches use no workload adjustment.</p>
       <details><summary>Data and evaluation details</summary><p>${escape(report.scope)}</p>
       <p>Retirements, walkovers, round robins and matches missing either ranking fall outside the evaluated population. Most uncertainty comes from player form, health and limited recent surface history. Each source rank has its own observation date.</p>
       <p><a href="https://stats.tennismylife.org/tennis-match-database">TennisMyLife data source</a> · <a href="data/season-model.json" download>Fitted model and evaluation (JSON)</a> · <a href="#archive">October workload research model</a></p></details>

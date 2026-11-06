@@ -13,6 +13,8 @@ From the repository root, use Node.js 24:
 
 Open <http://127.0.0.1:8000/#predict>. The preparation step needs internet access. It validates all four sources and writes a local fallback snapshot. The local server uses the same refresh handler as the hosted site and exposes its last successful fetch, attempted fetch and any error. The fitted model ships with the source, so these steps do not require Python or model training.
 
+Production declares an R2 binding named `BUCKET`. `/api/season` saves one validated snapshot using a conditional write and reuses it for 900 seconds. Local development uses an in-memory bucket with the same conditional-write interface. On a storage or provider error, inspect `status`, `error_stage`, `data_origin` and `snapshot_id`. The displayed snapshot timestamp, last successful runtime provider fetch and browser check are reported separately. Open pages poll every five minutes.
+
 ## Source map
 
 | File | Purpose |

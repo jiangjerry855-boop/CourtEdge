@@ -12,4 +12,6 @@ The target is victory conditional on standard completion, among ranked players i
 
 Chronological splits keep events intact and withhold boundary events until the 21-day reporting window clears. The selected model is refitted on eligible events available before January 2026. Its coefficients are frozen for the 2026 backtest. Ratings can learn from previous test events once released. The report includes a paired 2,000-resample event bootstrap for the log loss difference versus rank-only, tour breakdowns and favorite-probability calibration bins. Accuracy gives half credit for a 50–50 tie.
 
+The held-out workload comparison refits rankings plus Elo with and without earlier-round hours on identical training rows. It reports both log losses and a paired, event-bootstrap interval on identical test matches.
+
 The published calculator uses player profiles from the dated build, with editable pre-match ranks. Probabilities apply to hypothetical matches played after the snapshot. Rebuild profiles on newer data for later forecasts. Public data access is for educational, noncommercial research under the provider's terms.
