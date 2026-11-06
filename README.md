@@ -4,6 +4,14 @@ An end-to-end tennis data science project: a 2026 ATP/WTA dataset, reproducible 
 
 The [Prediction Lab](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site/#predict) uses a model fitted on 46,570 pre-2026 matches. Its interactive charts show matchup probabilities and monthly predicted versus observed win rates across 4,871 held-out 2026 matches. The latest included model and player ratings are dated November 5, 2026. The match explorer refreshes from TennisMyLife on demand.
 
+### Match data and model dates
+
+The match explorer and EDA use the same snapshot. Open pages poll every five minutes. A request after the 15-minute cache window triggers a source check. The [season API](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site/api/season) exposes the snapshot ID, source hashes, last successful provider fetch and any refresh error.
+
+On November 6, 2026 at 14:11 UTC, the v5 production API returned HTTP 200 with `status: ok` and 5,311 records, including 5,120 standard completions. The [EDA page](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site/#eda) showed both counts. All four hashes matched the TennisMyLife downloads. A second production request reused the snapshot and fetch timestamp.
+
+The November 5 prediction model uses coefficients fitted before January 1, 2026. In a paired comparison on the same 4,871 held-out matches, adding prior workload to rankings and Elo changed log loss from 0.61351 to 0.61361. The 95% event-bootstrap interval for the difference was −0.00075 to +0.00097. Both players had usable workload data in 1,675 matches.
+
 See the [website setup and source map](website/README.md) and [training instructions](website/training/README.md). The original workload study below uses the October 22 snapshot and four October 23 forecasts.
 
 - [Website](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site)
