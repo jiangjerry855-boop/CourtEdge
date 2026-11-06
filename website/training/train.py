@@ -196,6 +196,16 @@ def monthly_performance(held, outcomes, probabilities):
     return by_tour
 
 
+def event_loss_interval(held, differences):
+    groups = defaultdict(list)
+    for row, delta in zip(held, differences):
+        groups[row[3]].append(delta)
+    sums = np.array([sum(v) for v in groups.values()])
+    sizes = np.array([len(v) for v in groups.values()])
+    indices = np.random.default_rng(20261105).integers(len(groups), size=(2000,len(groups)))
+    return np.quantile(sums[indices].sum(axis=1)/sizes[indices].sum(axis=1), [.025,.975]).tolist()
+
+
 def train(directory, cutoff, destination):
     events, audit, manifest = read_events(directory, cutoff)
     examples, profiles = build_examples(events, cutoff)
@@ -221,14 +231,18 @@ def train(directory, cutoff, destination):
     for label in ("All", "ATP", "WTA"):
         mask = np.array([label == "All" or r[2] == label for r in held])
         table[label] = dict(selected=metrics(yt[mask], p[mask]), rank=metrics(yt[mask], p_rank[mask]))
-    # Paired event bootstrap keeps the two forecasts for each match together.
-    groups = defaultdict(list)
-    for row, delta in zip(held, loss(yt,p)-loss(yt,p_rank)):
-        groups[row[3]].append(delta)
-    sums = np.array([sum(v) for v in groups.values()])
-    sizes = np.array([len(v) for v in groups.values()])
-    indices = np.random.default_rng(20261105).integers(len(groups), size=(2000,len(groups)))
-    interval = np.quantile(sums[indices].sum(axis=1)/sizes[indices].sum(axis=1), [.025,.975])
+    interval = event_loss_interval(held, loss(yt, p) - loss(yt, p_rank))
+    # Refit both nested specifications on identical pre-2026 rows for a paired comparison.
+    def candidate_predictions(name):
+        width = CANDIDATES[name]
+        if name == chosen:
+            return p
+        return sigmoid(x[test, :width] @ fit(x[final_train, :width], y[final_train]))
+    ratings_p = candidate_predictions("ratings")
+    workload_p = candidate_predictions("ratings_workload")
+    differences = loss(yt, workload_p) - loss(yt, ratings_p)
+    ablation = dict(ratings=metrics(yt, ratings_p), ratings_workload=metrics(yt, workload_p),
+                    log_loss_delta=float(differences.mean()), log_loss_delta_ci95=event_loss_interval(held, differences))
     calibration = []
     confidence = np.maximum(p, 1-p)
     for lo in [.5,.6,.7,.8,.9]:
@@ -238,8 +252,8 @@ def train(directory, cutoff, destination):
                                     observed=metrics(yt[mask],p[mask])["accuracy"]))
     report = dict(as_of=str(cutoff), source="TennisMyLife", sources=manifest, ingestion=audit,
                   eligible=len(y), train=int(final_train.sum()), development=int(development.sum()),
-                  selection=validation_scores, selected=chosen, test=table, test_events=len(groups),
-                  log_loss_delta_ci95=interval.tolist(), calibration=calibration,
+                  selection=validation_scores, selected=chosen, test=table, test_events=len({row[3] for row in held}),
+                  log_loss_delta_ci95=interval, workload_ablation=ablation, calibration=calibration,
                   monthly=monthly_performance(held, yt, p),
                   test_workload_available=sum(r[6] for r in held), coefficients_fit_before=str(TEST_START),
                   scope="Ranked players in standard completed tour-level knockout singles on hard, clay or grass. "

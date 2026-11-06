@@ -1,4 +1,4 @@
-import {analyze} from './live-data.js';
+import {analyze, snapshotId} from './live-data.js';
 import {showPredictionLab} from './season-predict.js';
 import {edaView} from './eda-view.js';
 import {predict,validate} from './model.js';
@@ -22,7 +22,7 @@ const badge=t=>`<span class="tag ${t==='WTA'?'wta':''}">${esc(t)}</span>`;
 function fixtureCard(f,i){const pa=Number(f.p_a_strength);return `<article class="fixture-card"><div class="fixture-meta"><span>${badge(f.tour)} &nbsp; ${esc(f.event)} · QF</span><span>23 OCT</span></div><div class="player-line ${pa>=.5?'favorite':''}"><span class="player-dot"></span><span>${esc(f.name_a)}</span><b class="mono">${pct(pa)}</b></div><div class="player-line ${pa<.5?'favorite':''}"><span class="player-dot"></span><span>${esc(f.name_b)}</span><b class="mono">${pct(1-pa)}</b></div><div class="prob-track" aria-label="${esc(f.name_a)} ${pct(pa)}, ${esc(f.name_b)} ${pct(1-pa)}"><span style="width:${pa*100}%"></span></div><div class="fixture-footer"><span>Baseline win probability</span><button class="text-action" data-fixture="${i}">Analyze match ${icon('arrow')}</button></div></article>`;}
 function overview(){
  main.innerHTML=head('THE 2026 SEASON','A clearer view of the match.','Explore the records. Understand the workload. Test the probabilities.',`<span class="date-chip">${icon('calendar')} ${esc(D.eda.source_date_range[1])} source date</span>`)+
- `<div class="stats-grid"><div class="stat"><div class="stat-top">Match records ${icon('list')}</div><div class="stat-value">${fmt(D.matches.length)}</div><div class="stat-bottom"><b>ATP + WTA</b> · Refreshed source records</div></div><div class="stat"><div class="stat-top">Completed matches ${icon('check')}</div><div class="stat-value">${fmt(D.eda.completed)}</div><div class="stat-bottom">Standard completed singles scores</div></div><div class="stat"><div class="stat-top">Players represented ${icon('users')}</div><div class="stat-value">${fmt(D.players.length)}</div><div class="stat-bottom">In standard completed matches</div></div><div class="stat"><div class="stat-top">Test accuracy ${icon('target')}</div><div class="stat-value">${(100*D["season-model"].report.test.All.selected.accuracy).toFixed(1)}<span style="font-size:20px">%</span></div><div class="stat-bottom"><b>${fmt(D["season-model"].report.test.All.selected.n)} matches</b> · 2026 model test</div></div></div>
+ `<div class="stats-grid"><div class="stat"><div class="stat-top">Match records ${icon('list')}</div><div class="stat-value">${fmt(D.matches.length)}</div><div class="stat-bottom"><b>ATP + WTA</b> · Records in displayed snapshot</div></div><div class="stat"><div class="stat-top">Completed matches ${icon('check')}</div><div class="stat-value">${fmt(D.eda.completed)}</div><div class="stat-bottom">Standard completed singles scores</div></div><div class="stat"><div class="stat-top">Players represented ${icon('users')}</div><div class="stat-value">${fmt(D.players.length)}</div><div class="stat-bottom">In standard completed matches</div></div><div class="stat"><div class="stat-top">Test accuracy ${icon('target')}</div><div class="stat-value">${(100*D["season-model"].report.test.All.selected.accuracy).toFixed(1)}<span style="font-size:20px">%</span></div><div class="stat-bottom"><b>${fmt(D["season-model"].report.test.All.selected.n)} matches</b> · 2026 model test</div></div></div>
  <section class="insight-banner"><div><div class="eyebrow">MATCH PREDICTIONS</div><h2>Compare two players on your chosen surface.</h2><p>The model uses rankings, overall and surface-specific performance, and optional earlier-round workload.</p><a href="#predict">Open prediction lab ${icon('arrow')}</a></div><div class="court-art" aria-hidden="true"><div class="court-lines"></div><div class="court-ball"></div></div></section>
  <div class="dashboard-grid"><section><div class="section-head"><div><h2>Archived matchups</h2><p>Frozen forecasts · 23 October 2026</p></div><a href="#predict" class="subtle-link">Open prediction lab ↗</a></div><div class="fixtures-grid">${D.fixtures.map(fixtureCard).join('')}</div><p class="footnote">Pre-match estimates based on history through 22 October. These forecasts are conditional on normal match completion and are not live updates.</p></section>
  <aside class="coverage-aside"><div class="panel"><h3>Inside the current data</h3><p class="subtext">Standard completed matches</p><div class="coverage-item"><div class="coverage-label"><span>${badge('ATP')}</span><b>${fmt(D.eda.tours.ATP.completed)}</b></div><div class="coverage-track"><span style="width:100%"></span></div></div><div class="coverage-item"><div class="coverage-label"><span>${badge('WTA')}</span><b>${fmt(D.eda.tours.WTA.completed)}</b></div><div class="coverage-track"><span style="width:${D.eda.tours.WTA.completed/D.eda.tours.ATP.completed*100}%"></span></div></div><div class="mini-stats"><div><strong>${D.eda.tours.ATP.duration.median}<small> min</small></strong><small>ATP median duration</small></div><div><strong>${D.eda.tours.WTA.duration.median}<small> min</small></strong><small>WTA median duration</small></div></div><p class="footnote">Durations available for ${fmt(D.eda.tours.ATP.duration.n)} ATP and ${fmt(D.eda.tours.WTA.duration.n)} WTA matches.</p></div><div class="source-box"><strong>Traceable from source to forecast</strong>Match history from TennisMyLife. Fixtures and an official API demo checked with TennisStats.<br><a class="text-action" href="#research">See sources & download data ${icon('arrow')}</a></div></aside></div>`;
@@ -110,7 +110,7 @@ function research(){
  <div class="research-grid"><section class="panel"><div class="eyebrow">ADJUSTED ASSOCIATION</div><h2>One more hour on court</h2><div class="big-number">0.894 <span style="font-size:13px;color:#849079;letter-spacing:0">odds ratio</span></div><span class="confidence">95% interval · 0.825 to 0.984</span><p>Each additional prior hour relative to the opponent was associated with about <b>10.6% lower win odds</b>, after adjustment. This is not a 10.6 percentage point change in win probability.</p><p class="footnote">Prior match-count odds ratio: 1.084 (0.832-1.483). Development-set association; event-bootstrap intervals, 500 repetitions.</p></section>
  <section class="panel"><div class="eyebrow">INDEPENDENT TEST · 174 MATCHES</div><h2>Did workload improve the forecast?</h2><div class="table-scroll"><table class="research-model-table"><thead><tr><th>Model</th><th>AUC ↑</th><th>Log loss ↓</th><th>Brier ↓</th></tr></thead><tbody><tr><td>Baseline</td><td>0.671</td><td><b>0.6512</b></td><td>0.2297</td></tr><tr><td>+ Workload</td><td>0.660</td><td>0.6572</td><td>0.2323</td></tr></tbody></table></div><p>Both models achieved <b>60.9% accuracy</b>. Adding workload changed log loss by +0.0060, with a 95% interval of -0.0095 to +0.0272.</p><span class="tag warning">No reliable predictive improvement</span><p class="footnote">16 test events; 3,000 event-bootstrap repetitions. Lower log loss and Brier score are better.</p></section></div>
  <div class="section-head"><h2>How the study was built</h2><span class="card-count">1,578 eligible matches</span></div><div class="method-list"><section class="panel"><span class="method-index">01 / PRE-MATCH FEATURES</span><h3>Use only what was known</h3><p>Rank, age and qualifier status, with context interactions. The workload model adds earlier same-event hours and match counts. Current-match results and later rounds never become predictors.</p></section><section class="panel"><span class="method-index">02 / TIME-ORDERED EVALUATION</span><h3>Keep the test independent</h3><p>887 training, 187 validation and 174 test matches. A 21-day boundary buffer excludes another 330 eligible records from evaluation splits. The test begins with September events. Final forecast models use all 1,578 eligible records.</p></section><section class="panel"><span class="method-index">03 / REPRODUCIBLE EXECUTION</span><h3>Run and verify on Kaggle</h3><p>Regularized logistic regression. Private Kaggle notebook, version 1: successful CPU run in 55.7 seconds. Six code cells, no errors. Cloud and local metrics agreed within 10<sup>-12</sup>.</p><a class="text-action" href="https://www.kaggle.com/code/jerry871gws2/2026-tennis-fatigue-and-win-prediction" target="_blank" rel="noopener">Open Kaggle notebook ↗</a></section></div>
- <section class="panel" style="margin-bottom:24px"><h2>What the data can and cannot tell us</h2><p style="margin-top:12px;font-size:11px;line-height:1.9">Fatigue is not directly observed. Earlier opponent strength, injury, travel, sleep, training and scheduling can affect both time on court and outcomes. Qualifying and doubles are incompletely captured. Excluding retirements and missing durations can create selection bias. Source dates mix match-day and tournament-start meanings, so exact rest-day features are not used.</p><p style="margin-top:10px;font-size:11px;line-height:1.9">TennisStats integration verified official demo event 971951 against TennisMyLife (winner, two sets, 22 games) and matched four public fixtures. Full TennisStats history has not been imported; account access requires an API key. This site runs on the frozen dataset and does not claim a live connection.</p><div class="source-links"><a href="https://stats.tennismylife.org/tennis-match-database" target="_blank" rel="noopener">TennisMyLife database ↗</a><a href="https://tennisstats.com/" target="_blank" rel="noopener">TennisStats fixtures ↗</a><a href="https://tennisstats.com/api/documentations" target="_blank" rel="noopener">Official API documentation ↗</a></div></section>
+ <section class="panel" style="margin-bottom:24px"><h2>What the data can and cannot tell us</h2><p style="margin-top:12px;font-size:11px;line-height:1.9">Fatigue is not directly observed. Earlier opponent strength, injury, travel, sleep, training and scheduling can affect both time on court and outcomes. Qualifying and doubles are incompletely captured. Excluding retirements and missing durations can create selection bias. Source dates mix match-day and tournament-start meanings, so exact rest-day features are not used.</p><p style="margin-top:10px;font-size:11px;line-height:1.9">TennisStats integration verified official demo event 971951 against TennisMyLife (winner, two sets, 22 games) and matched four public fixtures. Full TennisStats history has not been imported; account access requires an API key. These research downloads use the October study snapshot. The match explorer checks the TennisMyLife feeds separately.</p><div class="source-links"><a href="https://stats.tennismylife.org/tennis-match-database" target="_blank" rel="noopener">TennisMyLife database ↗</a><a href="https://tennisstats.com/" target="_blank" rel="noopener">TennisStats fixtures ↗</a><a href="https://tennisstats.com/api/documentations" target="_blank" rel="noopener">Official API documentation ↗</a></div></section>
  <div class="section-head"><div><h2>Data & downloads</h2><p>Original source fields, model features, predictions, code and the English report.</p></div><select id="download-category" aria-label="Download category">${options([['all','All files'],'Matches','Analysis','Raw source','Reproduce','Report','Code'],state.downloadCategory)}</select></div><div class="panel" id="download-list"></div><p class="footnote">Source data is provided for private research. Check the original providers' terms before redistribution. The complete archive also includes both models' coefficients, provenance and an English README.</p>`;
  renderDownloads();$('#download-category').onchange=e=>{state.downloadCategory=e.target.value;renderDownloads();};
 }
@@ -122,11 +122,75 @@ try{
  const keys=['matches','players','fixtures','models','summary','downloads','season-model'];
  const results=await Promise.all(keys.map(async key=>{const r=await fetch(`data/${key}.json`);if(!r.ok)throw new Error('The '+key+' dataset could not be loaded.');return r.json();}));
  D=Object.fromEntries(keys.map((key,i)=>[key,results[i]]));
- D.historicalMatches=D.matches; const r=await fetch('data/current.json'); if(!r.ok)throw Error('Packaged current data unavailable');applyCurrent(await r.json()); loadFixture(3);window.addEventListener('hashchange',render);render(); refreshCurrent();setInterval(refreshCurrent,300000);
+ D.historicalMatches=D.matches; const r=await fetch('data/current.json'); if(!r.ok)throw Error('Packaged current data unavailable');const packaged = await r.json(); packaged.snapshot_id ||= await snapshotId(packaged.sources); applyCurrent(packaged); loadFixture(3);window.addEventListener('hashchange',render);render(); refreshCurrent();setInterval(refreshCurrent,300000);
 }catch(error){main.innerHTML=`<div class="empty"><strong>Unable to load the research snapshot</strong><p>${esc(error.message)}</p><button class="button" style="margin-top:20px" id="reload">Try again</button></div>`;$('#reload').onclick=()=>location.reload();}
 
-function applyCurrent(current){D.current=current;D.matches=current.matches;D.eda=analyze(D.matches);D.players=D.eda.players;}
-function eda(){main.innerHTML=edaView(D.eda,D.current,esc);$('#export-eda').onclick=()=>download('CourtEdge_current_EDA.json',JSON.stringify({source:D.current.sources,last_success_at:D.current.last_success_at,audit:D.current.audit,eda:D.eda},null,2));}
-function updateStatus(){const d=D.current;const age=(Date.now()-Date.parse(d.last_success_at))/3600000;$('#data-status').innerHTML='<div><strong>'+esc(d.status==='ok'?'Source fetch verified':d.status==='packaged'?'Packaged verified snapshot':'Refresh failed · last successful data retained')+'</strong><p>Last successful fetch (UTC): '+esc(d.last_success_at)+' · Latest source date: '+esc(D.eda.source_date_range[1])+'</p><p>Last attempt (UTC): '+esc(d.last_attempt_at)+' · '+(age>24?'Stale: last success over 24h ago. ':'')+'Source files checked at most every 15 minutes on demand; this page checks every 5 minutes. Provider publication may lag. No point-by-point live scores.</p>'+(d.error?'<p class="refresh-error">'+esc(d.error)+'</p>':'')+'</div><button class="button small secondary" id="refresh-data">Check for updates</button>';$('#refresh-data').onclick=refreshCurrent;$('.snapshot-badge').textContent=d.status==='ok'?'Auto-refresh · source files':'Snapshot / check status';}
-async function refreshCurrent(){if(refreshing)return;refreshing=true;try{const r=await fetch('/api/season',{cache:'no-store',signal:AbortSignal.timeout(30000)});if(!r.ok)throw Error('Refresh service HTTP '+r.status);const current=await r.json();if(!Array.isArray(current.matches)||!current.matches.length||!current.last_success_at)throw Error('Invalid refresh response');applyCurrent(current);if(state.page==='eda'||state.page==='overview')({eda,overview}[state.page])();else if(state.page==='matches')updateMatches();else if(state.page==='players')updatePlayers();}catch(e){D.current={...D.current,status:'stale',last_attempt_at:new Date().toISOString(),error:e.message};}finally{refreshing=false;updateStatus();}}
-if(D.current)updateStatus();
+function applyCurrent(current) {
+  if (!D.current || D.current.snapshot_id !== current.snapshot_id) {
+    const eda = analyze(current.matches);
+    D.matches = current.matches;
+    D.eda = eda;
+    D.players = eda.players;
+  }
+  D.current = current;
+}
+
+let browserCheckedAt = null;
+function eda() {
+  main.innerHTML = edaView(D.eda, D.current, esc);
+  $('#export-eda').onclick = () => {
+    const {matches, ...metadata} = D.current;
+    download('CourtEdge_current_EDA.json', JSON.stringify({...metadata, source: metadata.sources,
+      browser_checked_at: browserCheckedAt, source_date_range: D.eda.source_date_range, eda: D.eda}, null, 2));
+  };
+}
+
+function updateStatus() {
+  const d = D.current;
+  const origin = d.data_origin === 'provider' ? 'provider snapshot' : 'packaged snapshot';
+  const label = d.status === 'ok' ? 'Provider snapshot verified' : d.status === 'stale'
+    ? 'Refresh failed · showing ' + origin : 'Showing packaged snapshot';
+  const display = value => esc(value || 'Unavailable');
+  const latest = D.eda.source_date_range.at(-1);
+  $('#data-status').innerHTML = '<div><strong>' + esc(label) + '</strong><p>Displayed snapshot fetched (UTC): '
+    + display(d.last_success_at) + ' · Latest source record date: ' + display(latest) + '</p><p>Server last successful source fetch (UTC): '
+    + display(d.last_origin_success_at) + ' · Server last source attempt: ' + display(d.last_origin_attempt_at)
+    + ' · Browser last checked (UTC): ' + display(browserCheckedAt) + '</p><p>Open pages check every 5 minutes. '
+    + 'The server rechecks the four source files on demand after 15 minutes. Source dates can refer to the tournament start.</p>'
+    + (d.error ? '<p class="refresh-error">' + display(d.error_stage) + ' · ' + esc(d.error) + '</p>' : '')
+    + '</div><button class="button small secondary" id="refresh-data">Check for updates</button>';
+  $('#refresh-data').onclick = refreshCurrent;
+  $('.snapshot-badge').textContent = label;
+  $$('[data-season-state]').forEach(el => { el.textContent = label; });
+  $$('[data-model-date]').forEach(el => { el.textContent = 'Player ratings · ' + D['season-model'].report.as_of; });
+}
+
+async function refreshCurrent() {
+  if (refreshing) return;
+  refreshing = true;
+  try {
+    const response = await fetch('/api/season', {cache: 'no-store', signal: AbortSignal.timeout(30000)});
+    if (!response.ok) throw Error('Refresh service HTTP ' + response.status);
+    const next = await response.json();
+    if (!next.matches?.length || !next.audit || !next.sources?.length || !next.last_success_at) throw Error('Invalid refresh response');
+    next.snapshot_id ||= await snapshotId(next.sources);
+    // A server storage outage may return an older packaged copy than the one already on this page.
+    if (next.status === 'stale' && Date.parse(next.last_success_at) < Date.parse(D.current.last_success_at)) {
+      D.current = {...D.current, status: 'stale', error: next.error, error_stage: next.error_stage,
+        last_attempt_at: next.last_attempt_at, last_origin_attempt_at: next.last_origin_attempt_at || D.current.last_origin_attempt_at};
+    } else {
+      applyCurrent(next);
+    }
+    if (state.page === 'eda') eda();
+    else if (state.page === 'overview') overview();
+    else if (state.page === 'matches') updateMatches();
+    else if (state.page === 'players') updatePlayers();
+  } catch (error) {
+    D.current = {...D.current, status:'stale', error_stage:'browser_request', error:error.message};
+  } finally {
+    browserCheckedAt = new Date().toISOString();
+    refreshing = false;
+    updateStatus();
+  }
+}
+if (D.current) updateStatus();
