@@ -1,8 +1,8 @@
-import {SOURCES, ORIGIN, normalize, snapshotId} from './live-data.js';
+import {SOURCES, ORIGIN, normalize, snapshotId, CLEANING_VERSION} from './live-data.js';
 import {assets} from './embedded-assets.js';
 
 const TTL = 900;
-const seasonKey = 'season/2026/v2.json';
+const seasonKey = `season/2026/v${CLEANING_VERSION}.json`;
 
 async function asset(path) {
   const a = assets[path];

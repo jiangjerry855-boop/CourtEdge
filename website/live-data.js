@@ -4,14 +4,105 @@ export function parseCSV(text){
  if(/^\s*</.test(text))throw Error('Source returned HTML instead of CSV');
  const rows=[];let row=[],cell='',quote=false;
  for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(quote&&text[i+1]==='"'){cell+='"';i++;}else quote=!quote;}else if(!quote&&(c===','||c==='\n')){row.push(cell.replace(/\r$/,''));cell='';if(c==='\n'){if(row.some(Boolean))rows.push(row);row=[];}}else cell+=c;}
- if(quote)throw Error('Unterminated CSV quote');if(cell||row.length){row.push(cell.replace(/\r$/,''));rows.push(row);}const header=rows.shift()?.map(x=>x.replace(/^\uFEFF/,''));
- if(!header||!['tourney_id','winner_id','loser_id','score','minutes','tourney_date'].every(x=>header.includes(x)))throw Error('Required CSV columns missing');
+ if(quote)throw Error('Unterminated CSV quote');if(cell||row.length){row.push(cell.replace(/\r$/,''));rows.push(row);}const header=rows.shift()?.map(x=>x.trim());
+ if(!header||header.includes('')||new Set(header).size!==header.length||!['tourney_id','winner_id','loser_id','round','score','best_of','minutes','tourney_date'].every(x=>header.includes(x)))throw Error('Required CSV columns missing');
  return rows.map((r,i)=>{if(r.length!==header.length)throw Error('CSV width mismatch at row '+(i+2));return Object.fromEntries(header.map((k,j)=>[k,r[j]===''?null:r[j]]));});
 }
-export function score(s,b){if(!s||![3,5].includes(+b))return null;const tokens=s.trim().split(/\s+/),pairs=tokens.map(x=>/^(\d+)-(\d+)(?:\(\d+\))?$/.exec(x));if(pairs.some(x=>!x))return null;const p=pairs.map(x=>[+x[1],+x[2]]);if(p.some(([a,b])=>!((Math.max(a,b)===6&&Math.min(a,b)<=4)||(Math.max(a,b)===7&&[5,6].includes(Math.min(a,b))))))return null;const need=Math.floor(+b/2)+1;if(p.filter(([a,b])=>a>b).length!==need||p.filter(([a,b])=>b>a).length>=need)return null;return {sets:p.length,games:p.reduce((n,[a,b])=>n+a+b,0)};}
-const number=x=>x===null||x===''||!Number.isFinite(+x)?null:+x;
-export function normalize(files){let raw=0,excludedYear=0;const map=new Map();for(const name of SOURCES){const rows=parseCSV(files[name]);if(!rows.length)throw Error('Empty source '+name);raw+=rows.length;for(const row of rows){if(!/^2026\d{4}$/.test(String(row.tourney_date))){excludedYear++;continue;}if(!row.winner_id||!row.loser_id||!row.tourney_id)throw Error('Missing identity in '+name);const r={...row,tour:name.includes('wta')?'WTA':'ATP',source_file:name};for(const k of ['minutes','best_of','winner_rank','loser_rank','winner_age','loser_age'])r[k]=number(r[k]);r.minutes=r.minutes>=20&&r.minutes<=600?r.minutes:null;const p=score(r.score,r.best_of);Object.assign(r,{valid_score:!!p,sets:p?.sets??null,games:p?.games??null,analysis_eligible:null,source_date:String(r.tourney_date).replace(/^(\d{4})(\d{2})(\d{2})$/,'$1-$2-$3')});const key=[r.tour,r.tourney_id,r.round,...[r.winner_id,r.loser_id].sort()].join('|');map.set(key,r);}}
- const matches=[...map.values()].sort((a,b)=>b.source_date.localeCompare(a.source_date));if(matches.length<1000)throw Error('Season coverage unexpectedly small');return {matches,audit:{raw,excludedYear,duplicates:raw-excludedYear-matches.length,records:matches.length,completed:matches.filter(x=>x.valid_score).length}};
+export const CLEANING_VERSION = 3;
+const ENTRY_CODES = new Set(['Q', 'WC', 'LL', 'PR', 'SE', 'SR', 'ALT']);
+
+export function score(value, bestOf) {
+  if (!value || ![3, 5].includes(Number(bestOf))) return null;
+  const target = Math.floor(Number(bestOf) / 2) + 1;
+  let wins = 0, losses = 0, games = 0;
+  for (const token of value.trim().split(/\s+/)) {
+    if (wins === target || losses === target) return null;
+    const set = /^(\d+)-(\d+)(?:\(\d+\))?$/.exec(token);
+    if (!set) return null;
+    const a = Number(set[1]), b = Number(set[2]);
+    const high = Math.max(a, b), low = Math.min(a, b);
+    if (!((high === 6 && low <= 4) || (high === 7 && (low === 5 || low === 6)))) return null;
+    if (a > b) wins++;
+    else losses++;
+    games += a + b;
+  }
+  return wins === target ? {sets: wins + losses, games} : null;
+}
+
+function cleanNumber(value, changes, field, min, max, integer = true) {
+  if (value == null) return null;
+  const n = Number(value);
+  if (Number.isFinite(n) && n >= min && n <= max && (!integer || Number.isSafeInteger(n))) return n;
+  changes[field]++;
+  return null;
+}
+
+function cleanPlayer(row, side, changes) {
+  const entry = side + '_entry', seed = side + '_seed';
+  const code = row[entry]?.toUpperCase() ?? null;
+  if (code !== row[entry] && row[entry] != null) changes.entryCase++;
+  row[entry] = code;
+  const seedCode = row[seed]?.toUpperCase();
+  if (ENTRY_CODES.has(seedCode) && (!code || code === seedCode)) {
+    row[entry] = seedCode;
+    row[seed] = null;
+    changes.entryFromSeed++;
+  } else {
+    const rawSeed = row[seed];
+    row[seed] = cleanNumber(rawSeed, changes, 'invalidSeed', 1, Infinity);
+    if (row[seed] !== null && String(row[seed]) !== rawSeed) changes.seedFormat++;
+  }
+  row[side + '_ht'] = cleanNumber(row[side + '_ht'], changes, 'invalidHeight', 1, 300);
+  row[side + '_rank'] = cleanNumber(row[side + '_rank'], changes, 'invalidRank', 1, Infinity);
+  row[side + '_age'] = cleanNumber(row[side + '_age'], changes, 'invalidAge', Number.MIN_VALUE, Infinity, false);
+}
+
+function sourceDate(value) {
+  if (!/^\d{8}$/.test(value)) return null;
+  const iso = value.slice(0, 4) + '-' + value.slice(4, 6) + '-' + value.slice(6);
+  const date = new Date(iso + 'T00:00:00Z');
+  return Number.isFinite(+date) && date.toISOString().startsWith(iso + 'T') ? iso : null;
+}
+
+export function normalize(files) {
+  const unique = new Map();
+  const changes = {trimmedScores: 0, entryCase: 0, entryFromSeed: 0, seedFormat: 0,
+    invalidSeed: 0, invalidHeight: 0, invalidRank: 0, invalidAge: 0, invalidMinutes: 0, invalidBestOf: 0};
+  const audit = {cleaningVersion: CLEANING_VERSION, raw: 0, excludedYear: 0, invalidDate: 0, duplicates: 0, changes};
+  for (const name of SOURCES) {
+    const rows = parseCSV(files[name]);
+    if (!rows.length) throw Error('Empty source ' + name);
+    audit.raw += rows.length;
+    for (const row of rows) {
+      const rawScore = row.score;
+      for (const field of Object.keys(row)) row[field] = row[field]?.trim() || null;
+      const date = sourceDate(row.tourney_date);
+      if (!date) { audit.invalidDate++; continue; }
+      if (!date.startsWith('2026-')) { audit.excludedYear++; continue; }
+      if (!row.tourney_id || !row.winner_id || !row.loser_id || row.winner_id === row.loser_id) {
+        throw Error('Invalid match identity in ' + name);
+      }
+      if (!row.round && !row.match_num) throw Error('Missing round and match number in ' + name);
+      row.tour = name.includes('wta') ? 'WTA' : 'ATP';
+      row.source_file = name;
+      if (rawScore !== row.score) changes.trimmedScores++;
+      cleanPlayer(row, 'winner', changes);
+      cleanPlayer(row, 'loser', changes);
+      row.minutes = cleanNumber(row.minutes, changes, 'invalidMinutes', 20, 600);
+      if (row.best_of !== null && ![3, 5].includes(Number(row.best_of))) changes.invalidBestOf++;
+      row.best_of = [3, 5].includes(Number(row.best_of)) ? Number(row.best_of) : null;
+      const result = score(row.score, row.best_of);
+      Object.assign(row, {valid_score: !!result, sets: result?.sets ?? null, games: result?.games ?? null,
+        analysis_eligible: null, source_date: date});
+      const key = JSON.stringify([row.tour, row.tourney_id, row.round?.toUpperCase() || '#' + row.match_num,
+        ...[row.winner_id, row.loser_id].sort()]);
+      if (unique.has(key)) audit.duplicates++;
+      unique.set(key, row);
+    }
+  }
+  const matches = [...unique.values()].sort((a, b) => b.source_date.localeCompare(a.source_date));
+  if (matches.length < 1000) throw Error('Season coverage unexpectedly small');
+  return {matches, audit: {...audit, records: matches.length, completed: matches.filter(row => row.valid_score).length}};
 }
 const quantile=(a,q)=>{if(!a.length)return null;const b=[...a].sort((x,y)=>x-y),p=(b.length-1)*q,i=Math.floor(p);return b[i]+(b[Math.ceil(p)]-b[i])*(p-i);};
 const stats=a=>({n:a.length,min:a.length?Math.min(...a):null,q1:quantile(a,.25),median:quantile(a,.5),q3:quantile(a,.75),p95:quantile(a,.95),max:a.length?Math.max(...a):null});
@@ -23,6 +114,6 @@ export function analyze(matches){const completed=matches.filter(x=>x.valid_score
 
 export async function snapshotId(sources) {
   const manifest = sources.map(s => [s.name, s.sha256]).sort(([a], [b]) => a.localeCompare(b));
-  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(manifest)));
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify([CLEANING_VERSION, manifest])));
   return Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('');
 }

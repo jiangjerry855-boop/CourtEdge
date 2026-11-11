@@ -1,0 +1,59 @@
+{
+  "audit": {
+    "cleaningVersion": 3,
+    "raw": 5347,
+    "excludedYear": 0,
+    "invalidDate": 0,
+    "duplicates": 0,
+    "changes": {
+      "trimmedScores": 9,
+      "entryCase": 54,
+      "entryFromSeed": 1,
+      "seedFormat": 40,
+      "invalidSeed": 0,
+      "invalidHeight": 4,
+      "invalidRank": 0,
+      "invalidAge": 0,
+      "invalidMinutes": 4,
+      "invalidBestOf": 0
+    },
+    "records": 5347,
+    "completed": 5154
+  },
+  "last_success_at": "2026-11-10T23:48:56.110Z",
+  "last_attempt_at": "2026-11-10T23:48:56.110Z",
+  "status": "packaged",
+  "data_origin": "packaged",
+  "snapshot_id": "504989a72be51649e35ff2c70f53283522791046143c3a82f03d39de5fd713ff",
+  "last_origin_success_at": null,
+  "last_origin_attempt_at": null,
+  "error": null,
+  "error_stage": null,
+  "refresh_seconds": 900,
+  "sources": [
+    {
+      "name": "2026.csv",
+      "url": "https://stats.tennismylife.org/data/2026.csv",
+      "last_modified": "Tue, 10 Nov 2026 20:15:01 GMT",
+      "sha256": "0016632fe2ddf392195bc1db30cdd7e8a3aa8046bf25bd8380b2f37d9fb5dfdc"
+    },
+    {
+      "name": "2026_wta.csv",
+      "url": "https://stats.tennismylife.org/data/2026_wta.csv",
+      "last_modified": "Mon, 09 Nov 2026 10:21:05 GMT",
+      "sha256": "ffb0be477ff4c6c4f474a20b228eefde7f4e762852c2c4f0a553d08fcc4ccafb"
+    },
+    {
+      "name": "ongoing_tourneys.csv",
+      "url": "https://stats.tennismylife.org/data/ongoing_tourneys.csv",
+      "last_modified": "Tue, 10 Nov 2026 20:40:07 GMT",
+      "sha256": "64f9ca0068a875860b204bcdc7cd724315b780bf9a49fd18026ee8183c31ad31"
+    },
+    {
+      "name": "wta_ongoing_tourneys.csv",
+      "url": "https://stats.tennismylife.org/data/wta_ongoing_tourneys.csv",
+      "last_modified": "Tue, 10 Nov 2026 23:40:17 GMT",
+      "sha256": "5341399c6f8ad2c93aae51719d6f2c3415f42db9912e6c37614cd688a48ad319"
+    }
+  ]
+}

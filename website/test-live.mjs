@@ -16,6 +16,39 @@ assert.deepEqual(score('7-6(4) 6-3', 3), {sets: 2, games: 22});
 assert.throws(() => parseCSV('<html>blocked</html>'));
 assert.throws(() => normalize(Object.fromEntries(SOURCES.map(s => [s, 'broken']))));
 
+// Exercise the same raw CSV path used by the packaged export and runtime refresh.
+const files = Object.fromEntries(SOURCES.map(name => [name, fs.readFileSync('snapshots/' + name, 'utf8')]));
+const baseline = normalize(files);
+assert.deepEqual(baseline.audit, current.audit);
+assert.equal(baseline.audit.raw, baseline.audit.records + baseline.audit.duplicates
+  + baseline.audit.invalidDate + baseline.audit.excludedYear);
+assert.deepEqual(JSON.parse(fs.readFileSync('dist/downloads/current_matches_2026.audit.json')).audit, current.audit);
+assert.equal(fs.readFileSync('live-data.js', 'utf8'), fs.readFileSync('dist/live-data.js', 'utf8'));
+
+const mock = {tourney_id: 'test-cleaning', tourney_date: '20260228', round: 'QF',
+  winner_id: ' 001 ', loser_id: 'A002', winner_entry: 'Wc', winner_ht: '20080331',
+  winner_seed: '6.0', loser_seed: 'Q', loser_entry: '', minutes: '0', best_of: '3', score: ' 6-3 6-2 '};
+const append = (name, row) => {
+  const headers = Object.keys(parseCSV(files[name])[0]);
+  const cells = headers.map(key => '"' + String(row[key] ?? '').replaceAll('"', '""') + '"');
+  files[name] = files[name].trimEnd() + '\n' + cells.join(',') + '\n';
+};
+append(SOURCES[0], mock);
+append(SOURCES[0], {...mock, tourney_date: '20260230'});
+append(SOURCES[0], {...mock, tourney_date: '20251231'});
+append('ongoing_tourneys.csv', {...mock, minutes: '95'});
+const cleaned = normalize(files);
+assert.equal(cleaned.audit.records, baseline.audit.records + 1);
+assert.equal(cleaned.audit.invalidDate, baseline.audit.invalidDate + 1);
+assert.equal(cleaned.audit.excludedYear, baseline.audit.excludedYear + 1);
+assert.equal(cleaned.audit.duplicates, baseline.audit.duplicates + 1);
+const row = cleaned.matches.find(match => match.tourney_id === mock.tourney_id);
+assert.deepEqual([row.winner_id, row.winner_seed, row.winner_entry, row.winner_ht, row.loser_seed,
+  row.loser_entry, row.minutes, row.score, row.games], ['001', 6, 'WC', null, null, 'Q', 95, '6-3 6-2', 17]);
+assert.equal(cleaned.audit.changes.invalidMinutes, baseline.audit.changes.invalidMinutes + 1);
+assert.equal(score('6-3 6-2 0-6', 3), null);
+assert.equal(score('6-2 2-6 [10-8]', 3), null);
+
 const request = new Request('https://test/api/season');
 const read = async bucket => (await worker.fetch(request, {BUCKET: bucket})).json();
 const bucket = localBucket();

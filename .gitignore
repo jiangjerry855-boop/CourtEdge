@@ -18,4 +18,3 @@ website/snapshots/
 website/dist/server/
 website/dist/data/current*.json
 website/dist/data/eda.json
-website/dist/downloads/current_matches_2026.csv
