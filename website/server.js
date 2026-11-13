@@ -89,7 +89,10 @@ export default {
     if (!['GET', 'HEAD'].includes(request.method)) return new Response('Method not allowed', {status: 405});
     if (url.pathname !== '/api/season') return asset(url.pathname === '/' ? '/index.html' : decodeURIComponent(url.pathname));
     const data = await season(env?.BUCKET);
-    return new Response(request.method === 'HEAD' ? null : JSON.stringify({...data, refresh_seconds: TTL,
+    const {matches, ...metadata} = data;
+    const payload = url.searchParams.get('known') === data.snapshot_id
+      ? {...metadata, unchanged: true} : {...metadata, matches};
+    return new Response(request.method === 'HEAD' ? null : JSON.stringify({...payload, refresh_seconds: TTL,
       served_at: new Date().toISOString(), refresh_mode: 'On demand; open pages check every 5 minutes.'}), {
       headers: {'Content-Type': 'application/json', 'Cache-Control': 'no-store'}
     });

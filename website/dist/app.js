@@ -21,11 +21,17 @@ function csv(rows){if(!rows.length)return '';const keys=Object.keys(rows[0]);con
 const badge=t=>`<span class="tag ${t==='WTA'?'wta':''}">${esc(t)}</span>`;
 function fixtureCard(f,i){const pa=Number(f.p_a_strength);return `<article class="fixture-card"><div class="fixture-meta"><span>${badge(f.tour)} &nbsp; ${esc(f.event)} · QF</span><span>23 OCT</span></div><div class="player-line ${pa>=.5?'favorite':''}"><span class="player-dot"></span><span>${esc(f.name_a)}</span><b class="mono">${pct(pa)}</b></div><div class="player-line ${pa<.5?'favorite':''}"><span class="player-dot"></span><span>${esc(f.name_b)}</span><b class="mono">${pct(1-pa)}</b></div><div class="prob-track" aria-label="${esc(f.name_a)} ${pct(pa)}, ${esc(f.name_b)} ${pct(1-pa)}"><span style="width:${pa*100}%"></span></div><div class="fixture-footer"><span>Baseline win probability</span><button class="text-action" data-fixture="${i}">Analyze match ${icon('arrow')}</button></div></article>`;}
 function overview(){
- main.innerHTML=head('THE 2026 SEASON','A clearer view of the match.','Explore the records. Understand the workload. Test the probabilities.',`<span class="date-chip">${icon('calendar')} ${esc(D.eda.source_date_range[1])} source date</span>`)+
+ const recent = D.matches.filter(row => row.valid_score).slice(0, 5);
+ const latestRows = recent.map(row => `<tr><td>${badge(row.tour)}<small>${esc(row.source_date)}</small></td>
+   <td><b>${esc(row.winner_name)}</b><small>vs ${esc(row.loser_name)}</small></td>
+   <td>${esc(row.score)}</td><td>${esc(row.tourney_name)}<small>${esc(row.round)}</small></td></tr>`).join('');
+ main.innerHTML=head('ATP & WTA SINGLES','2026 season overview','Explore match results, player workload and pre-match win probabilities.',`<span class="date-chip">${icon('calendar')} ${esc(D.eda.source_date_range[1])} source date</span>`)+
  `<div class="stats-grid"><div class="stat"><div class="stat-top">Match records ${icon('list')}</div><div class="stat-value">${fmt(D.matches.length)}</div><div class="stat-bottom"><b>ATP + WTA</b> · Records in displayed snapshot</div></div><div class="stat"><div class="stat-top">Completed matches ${icon('check')}</div><div class="stat-value">${fmt(D.eda.completed)}</div><div class="stat-bottom">Standard completed singles scores</div></div><div class="stat"><div class="stat-top">Players represented ${icon('users')}</div><div class="stat-value">${fmt(D.players.length)}</div><div class="stat-bottom">In standard completed matches</div></div><div class="stat"><div class="stat-top">Test accuracy ${icon('target')}</div><div class="stat-value">${(100*D["season-model"].report.test.All.selected.accuracy).toFixed(1)}<span style="font-size:20px">%</span></div><div class="stat-bottom"><b>${fmt(D["season-model"].report.test.All.selected.n)} matches</b> · 2026 model test</div></div></div>
  <section class="insight-banner"><div><div class="eyebrow">MATCH PREDICTIONS</div><h2>Compare two players on your chosen surface.</h2><p>The model uses rankings, overall and surface-specific performance, and optional earlier-round workload.</p><a href="#predict">Open prediction lab ${icon('arrow')}</a></div><div class="court-art" aria-hidden="true"><div class="court-lines"></div><div class="court-ball"></div></div></section>
- <div class="dashboard-grid"><section><div class="section-head"><div><h2>Archived matchups</h2><p>Frozen forecasts · 23 October 2026</p></div><a href="#predict" class="subtle-link">Open prediction lab ↗</a></div><div class="fixtures-grid">${D.fixtures.map(fixtureCard).join('')}</div><p class="footnote">Pre-match estimates based on history through 22 October. These forecasts are conditional on normal match completion and are not live updates.</p></section>
- <aside class="coverage-aside"><div class="panel"><h3>Inside the current data</h3><p class="subtext">Standard completed matches</p><div class="coverage-item"><div class="coverage-label"><span>${badge('ATP')}</span><b>${fmt(D.eda.tours.ATP.completed)}</b></div><div class="coverage-track"><span style="width:100%"></span></div></div><div class="coverage-item"><div class="coverage-label"><span>${badge('WTA')}</span><b>${fmt(D.eda.tours.WTA.completed)}</b></div><div class="coverage-track"><span style="width:${D.eda.tours.WTA.completed/D.eda.tours.ATP.completed*100}%"></span></div></div><div class="mini-stats"><div><strong>${D.eda.tours.ATP.duration.median}<small> min</small></strong><small>ATP median duration</small></div><div><strong>${D.eda.tours.WTA.duration.median}<small> min</small></strong><small>WTA median duration</small></div></div><p class="footnote">Durations available for ${fmt(D.eda.tours.ATP.duration.n)} ATP and ${fmt(D.eda.tours.WTA.duration.n)} WTA matches.</p></div><div class="source-box"><strong>Traceable from source to forecast</strong>Match history from TennisMyLife. Fixtures and an official API demo checked with TennisStats.<br><a class="text-action" href="#research">See sources & download data ${icon('arrow')}</a></div></aside></div>`;
+ <div class="dashboard-grid"><section><div class="panel recent-results"><div class="section-head"><div><h2>Recent results</h2><p>Completed matches by source date</p></div><a href="#matches" class="subtle-link">All matches ↗</a></div>
+ <div class="table-scroll"><table><thead><tr><th>Tour / date</th><th>Winner / loser</th><th>Score</th><th>Tournament</th></tr></thead><tbody>${latestRows}</tbody></table></div></div>
+ <div class="section-head"><div><h2>Archived matchups</h2><p>Frozen forecasts · 23 October 2026</p></div><a href="#predict" class="subtle-link">Open prediction lab ↗</a></div><div class="fixtures-grid">${D.fixtures.map(fixtureCard).join('')}</div><p class="footnote">Pre-match estimates based on history through 22 October. These forecasts are conditional on normal match completion and are not live updates.</p></section>
+ <aside class="coverage-aside"><div class="panel"><h3>Inside the current data</h3><p class="subtext">Standard completed matches</p><div class="coverage-item"><div class="coverage-label"><span>${badge('ATP')}</span><b>${fmt(D.eda.tours.ATP.completed)}</b></div><div class="coverage-track"><span style="width:${100*D.eda.tours.ATP.completed/Math.max(1,D.eda.tours.ATP.completed,D.eda.tours.WTA.completed)}%"></span></div></div><div class="coverage-item"><div class="coverage-label"><span>${badge('WTA')}</span><b>${fmt(D.eda.tours.WTA.completed)}</b></div><div class="coverage-track"><span style="width:${100*D.eda.tours.WTA.completed/Math.max(1,D.eda.tours.ATP.completed,D.eda.tours.WTA.completed)}%"></span></div></div><div class="mini-stats"><div><strong>${D.eda.tours.ATP.duration.median}<small> min</small></strong><small>ATP median duration</small></div><div><strong>${D.eda.tours.WTA.duration.median}<small> min</small></strong><small>WTA median duration</small></div></div><p class="footnote">Durations available for ${fmt(D.eda.tours.ATP.duration.n)} ATP and ${fmt(D.eda.tours.WTA.duration.n)} WTA matches.</p></div><div class="source-box"><strong>Traceable from source to forecast</strong>Match history from TennisMyLife. Fixtures and an official API demo checked with TennisStats.<br><a class="text-action" href="#research">See sources & download data ${icon('arrow')}</a></div></aside></div>`;
  bindFixtures();
 }
 function bindFixtures(){ $$('[data-fixture]',main).forEach(b=>b.addEventListener('click',()=>{loadFixture(Number(b.dataset.fixture));location.hash='archive';if(state.page==='archive')render();})); }
@@ -46,6 +52,8 @@ function updateMatches(){
  const s=state.match,q=s.q.toLowerCase().trim();
  activeMatches=D.matches.filter(r=>(!q||`${r.winner_name} ${r.loser_name} ${r.tourney_name} ${r.winner_ioc} ${r.loser_ioc}`.toLowerCase().includes(q))&&(s.tour==='all'||r.tour===s.tour)&&(s.surface==='all'||r.surface===s.surface)&&(s.status==='all'||(s.status==='completed'&&r.valid_score)||(s.status==='eligible'&&r.analysis_eligible)||(s.status==='other'&&!r.valid_score)));
  activeMatches.sort((a,b)=>s.sort==='minutes'?(b.minutes??-1)-(a.minutes??-1):s.sort==='event'?a.tourney_name.localeCompare(b.tourney_name):String(b.source_date).localeCompare(String(a.source_date)));
+ $('#export-matches').disabled = !activeMatches.length;
+ s.page = Math.min(s.page, Math.max(1, Math.ceil(activeMatches.length / s.size)));
  const start=(s.page-1)*s.size,rows=activeMatches.slice(start,start+s.size);
  $('#match-info').innerHTML=`<span><b>${fmt(activeMatches.length)}</b> records ${s.q||s.tour!=='all'||s.surface!=='all'||s.status!=='all'?'matching your filters':'in the snapshot'}</span><span>All original fields available in Details and CSV</span>`;
  $('#match-body').innerHTML=rows.length?rows.map((r,i)=>`<tr><td class="mono">${esc(r.source_date)}<small>${badge(r.tour)}</small></td><td><b>${esc(r.tourney_name)}</b><small>${esc(r.surface||'Unknown surface')} · ${esc(r.round)}</small></td><td class="text-wrap"><b><span class="win-mark">W</span>${esc(r.winner_name)}</b><small>vs ${esc(r.loser_name)}</small></td><td class="mono">${esc(r.score||'—')}</td><td class="mono">${r.minutes??'—'}</td><td>${r.analysis_eligible===null?'<span class="tag surface">Not evaluated</span>':r.analysis_eligible?'<span class="tag">Eligible</span>':r.valid_score?'<span class="tag surface">Outside sample</span>':'<span class="tag warning">Non-standard</span>'}</td><td><button class="text-action" data-details="${start+i}" aria-label="View ${esc(r.winner_name)} versus ${esc(r.loser_name)} details">View ↗</button></td></tr>`).join(''):'<tr><td colspan="7"><div class="empty"><strong>No matches found</strong>Try another player, tournament or filter.</div></td></tr>';
@@ -60,12 +68,20 @@ function showMatch(r){
 }
 function players(){
  const s=state.player;
- main.innerHTML=head('PLAYER DIRECTORY','The players behind the numbers.','Season records from standard completed singles. Last recorded rankings are historical snapshot values.',`<button class="button secondary" id="export-players">${icon('download')}Player CSV</button>`)+
+ main.innerHTML=head('PLAYER DIRECTORY','The players behind the numbers.','Season records from standard completed singles. Last recorded rankings are historical snapshot values.',`<button class="button secondary" id="export-players">${icon('download')}Export filtered CSV</button>`)+
  `<div class="toolbar">${searchBox('player-search','Search a player or country…',s.q)}<select id="player-tour" aria-label="Player tour">${options([['all','All tours'],'ATP','WTA'],s.tour)}</select><select id="player-min" aria-label="Minimum matches">${options([[0,'Any match count'],[10,'10+ matches'],[25,'25+ matches'],[50,'50+ matches']],s.min)}</select><select id="player-sort" aria-label="Sort players">${options([['wins','Most wins'],['win_rate','Highest win rate'],['matches','Most matches'],['recorded_minutes','Most recorded minutes'],['player','Name A-Z']],s.sort)}</select></div>
  <div class="data-shell"><div class="table-info" id="player-info"></div><div class="table-scroll"><table><thead><tr><th>Player</th><th>Tour</th><th>Matches</th><th>Wins / losses</th><th>Win rate</th><th>Recorded minutes</th><th>Last rank</th><th>Records</th></tr></thead><tbody id="player-body"></tbody></table></div><div class="pagination" id="player-pagination"></div></div><p class="footnote">Win rates describe this source snapshot, not model probabilities. Minutes exclude missing durations; data coverage is shown below each total. Rankings may differ across dates and sources.</p>`;
- updatePlayers();$('#export-players').onclick=()=>download('CourtEdge_current_players.csv',csv(D.players),'text/csv;charset=utf-8');$('#player-search').oninput=e=>{s.q=e.target.value;s.page=1;updatePlayers();};for(const key of ['tour','min','sort'])$('#player-'+key).onchange=e=>{s[key]=key==='min'?Number(e.target.value):e.target.value;s.page=1;updatePlayers();};
+ updatePlayers();
+ $('#export-players').onclick = () => {
+   if (!activePlayers.length) return;
+   download('CourtEdge_filtered_players.csv', csv(activePlayers), 'text/csv;charset=utf-8');
+   notify(fmt(activePlayers.length) + ' players exported.');
+ };
+ $('#player-search').oninput=e=>{s.q=e.target.value;s.page=1;updatePlayers();};for(const key of ['tour','min','sort'])$('#player-'+key).onchange=e=>{s[key]=key==='min'?Number(e.target.value):e.target.value;s.page=1;updatePlayers();};
 }
-function updatePlayers(){const s=state.player,q=s.q.toLowerCase().trim();activePlayers=D.players.filter(p=>(!q||`${p.player} ${p.country}`.toLowerCase().includes(q))&&(s.tour==='all'||p.tour===s.tour)&&p.matches>=s.min);activePlayers.sort((a,b)=>s.sort==='player'?a.player.localeCompare(b.player):b[s.sort]-a[s.sort]||b.matches-a.matches);const rows=activePlayers.slice((s.page-1)*s.size,s.page*s.size);$('#player-info').innerHTML=`<span><b>${fmt(activePlayers.length)}</b> players</span><span>Standard completed matches only</span>`;$('#player-body').innerHTML=rows.length?rows.map(p=>`<tr><td><b>${esc(p.player)}</b><small>${esc(p.country)}</small></td><td>${badge(p.tour)}</td><td class="mono">${p.matches}</td><td class="mono">${p.wins} / ${p.matches-p.wins}</td><td class="mono"><b>${pct(p.win_rate)}</b></td><td class="mono">${fmt(p.recorded_minutes)}<small>${p.duration_available} / ${p.matches} durations</small></td><td class="mono">${p.rank?'#'+p.rank:'—'}<small>${esc(p.rank_date)}</small></td><td><button class="text-action" data-player-matches="${esc(p.key)}">View matches ↗</button></td></tr>`).join(''):'<tr><td colspan="8"><div class="empty"><strong>No players found</strong>Change the search or minimum match count.</div></td></tr>';pagination('player-pagination',s,activePlayers.length,updatePlayers);$$('[data-player-matches]').forEach(b=>b.onclick=()=>{const p=D.players.find(x=>x.key===b.dataset.playerMatches);state.match={q:p.player,tour:p.tour,surface:'all',status:'completed',sort:'date',page:1,size:25};location.hash='matches';});}
+function updatePlayers(){const s=state.player,q=s.q.toLowerCase().trim();activePlayers=D.players.filter(p=>(!q||`${p.player} ${p.country}`.toLowerCase().includes(q))&&(s.tour==='all'||p.tour===s.tour)&&p.matches>=s.min);activePlayers.sort((a,b)=>s.sort==='player'?a.player.localeCompare(b.player):b[s.sort]-a[s.sort]||b.matches-a.matches);$('#export-players').disabled = !activePlayers.length;
+ s.page = Math.min(s.page, Math.max(1, Math.ceil(activePlayers.length / s.size)));
+ const rows=activePlayers.slice((s.page-1)*s.size,s.page*s.size);$('#player-info').innerHTML=`<span><b>${fmt(activePlayers.length)}</b> players</span><span>Standard completed matches only</span>`;$('#player-body').innerHTML=rows.length?rows.map(p=>`<tr><td><b>${esc(p.player)}</b><small>${esc(p.country)}</small></td><td>${badge(p.tour)}</td><td class="mono">${p.matches}</td><td class="mono">${p.wins} / ${p.matches-p.wins}</td><td class="mono"><b>${pct(p.win_rate)}</b></td><td class="mono">${fmt(p.recorded_minutes)}<small>${p.duration_available} / ${p.matches} durations</small></td><td class="mono">${p.rank?'#'+p.rank:'—'}<small>${esc(p.rank_date)}</small></td><td><button class="text-action" data-player-matches="${esc(p.key)}">View matches ↗</button></td></tr>`).join(''):'<tr><td colspan="8"><div class="empty"><strong>No players found</strong>Change the search or minimum match count.</div></td></tr>';pagination('player-pagination',s,activePlayers.length,updatePlayers);$$('[data-player-matches]').forEach(b=>b.onclick=()=>{const p=D.players.find(x=>x.key===b.dataset.playerMatches);state.match={q:p.player,tour:p.tour,surface:'all',status:'completed',sort:'date',page:1,size:25};location.hash='matches';});}
 function loadFixture(i){const f=D.fixtures[i];state.fixture=i;state.scenario={tour:f.tour,surface:'Hard',bestOf:3,round:'QF',a:{name:f.name_a,rank:f.rank_a,age:f.age_a,qualifier:!!f.qualifier_a,minutes:Math.round(f.prior_hours_a*60),matches:f.prior_matches_a},b:{name:f.name_b,rank:f.rank_b,age:f.age_b,qualifier:!!f.qualifier_b,minutes:Math.round(f.prior_hours_b*60),matches:f.prior_matches_b}};}
 function playerForm(side){const s=state.scenario[side],cap=side.toUpperCase();return `<div class="player-form"><div class="player-form-title"><span class="avatar">${cap}</span> PLAYER ${cap}</div><div class="field"><label for="name-${side}">Player name</label><input id="name-${side}" list="player-options" value="${esc(s.name)}" placeholder="Search or enter a player" autocomplete="off"><small id="profile-${side}">Use verified pre-match rank and age.</small></div><div class="field-grid"><div class="field"><label for="rank-${side}">Pre-match rank</label><input id="rank-${side}" type="number" min="1" max="3000" step="1" value="${s.rank??''}"></div><div class="field"><label for="age-${side}">Age</label><input id="age-${side}" type="number" min="13" max="60" step=".001" value="${s.age??''}"></div></div><div class="field" style="margin-top:14px"><label for="qualifier-${side}">Entry status</label><select id="qualifier-${side}">${options([[0,'Direct / other entry'],[1,'Qualifier / lucky loser']],s.qualifier?1:0)}</select></div><div class="workload-divider">PRIOR PLAY IN THIS EVENT</div><div class="field-grid"><div class="field"><label for="minutes-${side}">Minutes played</label><input id="minutes-${side}" type="number" min="20" step="1" value="${s.minutes??''}" placeholder="Required"></div><div class="field"><label for="matches-${side}">Matches played</label><input id="matches-${side}" type="number" min="1" max="6" step="1" value="${s.matches??''}" placeholder="Required"></div></div></div>`;}
 function prediction(){
@@ -117,12 +133,25 @@ function research(){
 function renderDownloads(){$('#download-list').innerHTML=D.downloads.filter(f=>state.downloadCategory==='all'||f.category===state.downloadCategory).map(f=>`<div class="download-row"><div><strong>${esc(f.name)}</strong><p>${esc(f.description)}</p><span class="file-size">${f.category} · ${f.bytes>=1e6?(f.bytes/1e6).toFixed(1)+' MB':Math.ceil(f.bytes/1000)+' KB'}</span></div><a class="button small secondary" href="downloads/${encodeURIComponent(f.name)}" download>${icon('download')}Download</a></div>`).join('');}
 function render(){state.page=location.hash.slice(1)||'overview';if(!Object.hasOwn(names,state.page))state.page='overview';$$('[data-nav]').forEach(a=>{a.classList.toggle('active',a.dataset.nav===state.page);if(a.dataset.nav===state.page)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});$('#breadcrumb').textContent=names[state.page];document.title=names[state.page]+' | CourtEdge';({overview,matches,players,predict:()=>showPredictionLab(main,D['season-model']),archive:prediction,research,eda}[state.page])();window.scrollTo(0,0);}
 $('#detail-dialog .close-dialog').onclick=()=>$('#detail-dialog').close();$('#detail-dialog').addEventListener('click',e=>{if(e.target===$('#detail-dialog'))$('#detail-dialog').close();});
-let refreshing=false;
+let refreshing = false;
+let browserCheckedAt = null;
 try{
- const keys=['matches','players','fixtures','models','summary','downloads','season-model'];
- const results=await Promise.all(keys.map(async key=>{const r=await fetch(`data/${key}.json`);if(!r.ok)throw new Error('The '+key+' dataset could not be loaded.');return r.json();}));
- D=Object.fromEntries(keys.map((key,i)=>[key,results[i]]));
- D.historicalMatches=D.matches; const r=await fetch('data/current.json'); if(!r.ok)throw Error('Packaged current data unavailable');const packaged = await r.json(); packaged.snapshot_id ||= await snapshotId(packaged.sources); applyCurrent(packaged); loadFixture(3);window.addEventListener('hashchange',render);render(); refreshCurrent();setInterval(refreshCurrent,300000);
+ const keys = ['current', 'fixtures', 'models', 'downloads', 'season-model'];
+ const entries = await Promise.all(keys.map(async key => {
+   const response = await fetch('data/' + key + '.json');
+   if (!response.ok) throw Error('The ' + key + ' dataset could not be loaded.');
+   return [key, await response.json()];
+ }));
+ const {current, ...reference} = Object.fromEntries(entries);
+ D = reference;
+ current.snapshot_id ||= await snapshotId(current.sources);
+ applyCurrent(current);
+ loadFixture(3);
+ window.addEventListener('hashchange', render);
+ render();
+ updateStatus();
+ refreshCurrent();
+ setInterval(refreshCurrent, 300000);
 }catch(error){main.innerHTML=`<div class="empty"><strong>Unable to load the research snapshot</strong><p>${esc(error.message)}</p><button class="button" style="margin-top:20px" id="reload">Try again</button></div>`;$('#reload').onclick=()=>location.reload();}
 
 function applyCurrent(current) {
@@ -135,7 +164,6 @@ function applyCurrent(current) {
   D.current = current;
 }
 
-let browserCheckedAt = null;
 function eda() {
   main.innerHTML = edaView(D.eda, D.current, esc);
   $('#export-eda').onclick = () => {
@@ -152,13 +180,16 @@ function updateStatus() {
     ? 'Refresh failed · showing ' + origin : 'Showing packaged snapshot';
   const display = value => esc(value || 'Unavailable');
   const latest = D.eda.source_date_range.at(-1);
-  $('#data-status').innerHTML = '<div><strong>' + esc(label) + '</strong><p>Displayed snapshot fetched (UTC): '
-    + display(d.last_success_at) + ' · Latest source record date: ' + display(latest) + '</p><p>Server last successful source fetch (UTC): '
-    + display(d.last_origin_success_at) + ' · Server last source attempt: ' + display(d.last_origin_attempt_at)
-    + ' · Browser last checked (UTC): ' + display(browserCheckedAt) + '</p><p>Open pages check every 5 minutes. '
-    + 'The server rechecks the four source files on demand after 15 minutes. Source dates can refer to the tournament start.</p>'
-    + (d.error ? '<p class="refresh-error">' + display(d.error_stage) + ' · ' + esc(d.error) + '</p>' : '')
-    + '</div><button class="button small secondary" id="refresh-data">Check for updates</button>';
+  const panel = $('#data-status');
+  const expanded = panel.querySelector('details')?.open;
+  panel.innerHTML = `<div class="status-body"><strong>${esc(label)}</strong>
+    <span class="status-date">Latest source date · ${display(latest)}</span>
+    <details ${expanded ? 'open' : ''}><summary>Refresh details</summary>
+      <p>Displayed snapshot fetched (UTC): ${display(d.last_success_at)} · Browser last checked (UTC): ${display(browserCheckedAt)}</p>
+      <p>Server last successful source fetch (UTC): ${display(d.last_origin_success_at)} · Last attempt: ${display(d.last_origin_attempt_at)}</p>
+      <p>Open pages check every 5 minutes. The server rechecks sources after 15 minutes. Source dates can refer to the tournament start.</p>
+    </details>${d.error ? '<p class="refresh-error">' + display(d.error_stage) + ' · ' + esc(d.error) + '</p>' : ''}
+    </div><button class="button small secondary" id="refresh-data">Check for updates</button>`;
   $('#refresh-data').onclick = refreshCurrent;
   $('.snapshot-badge').textContent = label;
   $$('[data-season-state]').forEach(el => { el.textContent = label; });
@@ -168,12 +199,21 @@ function updateStatus() {
 async function refreshCurrent() {
   if (refreshing) return;
   refreshing = true;
+  const button = $('#refresh-data');
+  button.disabled = true;
+  button.textContent = 'Checking…';
   try {
-    const response = await fetch('/api/season', {cache: 'no-store', signal: AbortSignal.timeout(30000)});
+    const response = await fetch('/api/season?known=' + encodeURIComponent(D.current.snapshot_id), {cache: 'no-store', signal: AbortSignal.timeout(30000)});
     if (!response.ok) throw Error('Refresh service HTTP ' + response.status);
     const next = await response.json();
-    if (!next.matches?.length || !next.audit || !next.sources?.length || !next.last_success_at) throw Error('Invalid refresh response');
+    if (!next.audit || !next.sources?.length || !next.last_success_at) throw Error('Invalid refresh response');
     next.snapshot_id ||= await snapshotId(next.sources);
+    const unchanged = next.snapshot_id === D.current.snapshot_id;
+    if (next.unchanged === true && unchanged) {
+      next.matches = D.matches;
+      delete next.unchanged;
+    }
+    if (!next.matches?.length) throw Error('Missing match records');
     // A server storage outage may return an older packaged copy than the one already on this page.
     if (next.status === 'stale' && Date.parse(next.last_success_at) < Date.parse(D.current.last_success_at)) {
       D.current = {...D.current, status: 'stale', error: next.error, error_stage: next.error_stage,
@@ -181,10 +221,12 @@ async function refreshCurrent() {
     } else {
       applyCurrent(next);
     }
-    if (state.page === 'eda') eda();
-    else if (state.page === 'overview') overview();
-    else if (state.page === 'matches') updateMatches();
-    else if (state.page === 'players') updatePlayers();
+    if (!unchanged && D.current === next) {
+      if (state.page === 'eda') eda();
+      else if (state.page === 'overview') overview();
+      else if (state.page === 'matches') updateMatches();
+      else if (state.page === 'players') updatePlayers();
+    }
   } catch (error) {
     D.current = {...D.current, status:'stale', error_stage:'browser_request', error:error.message};
   } finally {
@@ -193,4 +235,3 @@ async function refreshCurrent() {
     updateStatus();
   }
 }
-if (D.current) updateStatus();

@@ -86,6 +86,13 @@ try {
   const cached = await read(bucket);
   assert.equal(sourceRequests, checks);
   assert.equal(cached.last_attempt_at, ok.last_attempt_at);
+  const conditional = async id => (await worker.fetch(
+    new Request(request.url + '?known=' + id), {BUCKET: bucket})).json();
+  const same = await conditional(ok.snapshot_id);
+  assert.equal(same.unchanged, true);
+  assert.equal(same.matches, undefined);
+  assert.deepEqual(same.sources, ok.sources);
+  assert.equal((await conditional('older-id')).matches.length, ok.audit.records);
   expire();
   const denied = await read({get: bucket.get, put() {throw Error('write denied');}});
   assert.equal(denied.error_stage, 'storage_write');
