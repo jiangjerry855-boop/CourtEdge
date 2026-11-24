@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {parseCSV, normalize, score, analyze, SOURCES} from './live-data.js';
 import {localBucket} from './local-bucket.mjs';
-import worker from './dist/server/index.js';
+import worker from './local-build/index.js';
 
 const current = JSON.parse(fs.readFileSync('dist/data/current.json'));
 const eda = analyze(current.matches);

@@ -1,10 +1,10 @@
 # CourtEdge win model
 
-Use Python 3.12 with NumPy. Run these steps from the project root. The input directory is outside the published site.
+Use Python 3.12 with NumPy. Run these steps from the `website/` directory. The input directory is outside the published site.
 
     python training/fetch_seasons.py ../training-input
     python training/train.py ../training-input dist/data/season-model.json --as-of 2026-11-05
-    node build.mjs
+    npm run build:local
 
 The first step fetches the 2016–2026 annual ATP and WTA files and both ongoing-event feeds from TennisMyLife. The manifest records source URLs, byte counts, retrieval timestamps and SHA-256 hashes. For an exact rerun, supply the cached CSVs and corresponding manifest. The provider can revise historical files.
 
@@ -14,4 +14,4 @@ Chronological splits keep events intact and withhold boundary events until the 2
 
 The held-out workload comparison refits rankings plus Elo with and without earlier-round hours on identical training rows. It reports both log losses and a paired, event-bootstrap interval on identical test matches.
 
-The published calculator uses player profiles from the dated build, with editable pre-match ranks. Probabilities apply to hypothetical matches played after the snapshot. Rebuild profiles on newer data for later forecasts. Public data access is for educational, noncommercial research under the provider's terms.
+The local research calculator uses player profiles from the dated build, with editable pre-match ranks. Probabilities apply to hypothetical matches played after the snapshot. Rebuild profiles on newer data for later forecasts. Public data access is for educational, noncommercial research under the provider's terms.

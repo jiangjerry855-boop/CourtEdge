@@ -18,3 +18,18 @@ website/snapshots/
 website/dist/server/
 website/dist/data/current*.json
 website/dist/data/eda.json
+
+# Provider source, private research artifacts, and generated website output
+/raw/
+/outputs/
+/notebooks/
+/reports/
+/demo_match.json
+/fixtures_2026-10-23.json
+/website/dist/data/
+/website/dist/downloads/
+/website/local-build/
+/website/portfolio-dist/
+*.csv
+*.zip
+*.ipynb

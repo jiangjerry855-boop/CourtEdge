@@ -1,115 +1,32 @@
 # CourtEdge: Tennis Workload & Win Prediction
 
-An end-to-end tennis data science project: a 2026 ATP/WTA dataset, reproducible Python analysis, an executed Kaggle notebook, an English report, and an interactive website for exploring records and estimating match win probabilities.
+CourtEdge is a tennis data science portfolio project. It uses ATP and WTA match records to study whether prior time on court helps predict the winner, and it compares rank-based and Elo-based models on matches not used to fit the model.
 
-The [Prediction Lab](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site/#predict) uses a model fitted on 46,570 pre-2026 matches. Its interactive charts show matchup probabilities and monthly predicted versus observed win rates across 4,871 held-out 2026 matches. The latest included model and player ratings are dated November 5, 2026. The match explorer refreshes from TennisMyLife on demand.
+In the November 5, 2026 experiment, adding workload to rankings and Elo moved held-out log loss from **0.61351** to **0.61361** across **4,871** matches. The 95% event-bootstrap interval for the difference was **−0.00075 to +0.00097**; both players had usable workload in 1,675 matches. The small difference did not establish a predictive improvement. Prior time on court is a proxy, not a direct measurement of fatigue or a causal estimate.
 
-### Match data and model dates
+## What's here
 
-The match explorer and EDA use the same snapshot. Open pages poll every five minutes. A request after the 15-minute cache window triggers a source check. The [season API](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site/api/season) exposes the snapshot ID, source hashes, last successful provider fetch and any refresh error.
+- `analysis.py`, `predict_fixtures.py`, and `tennisstats_client.py`: historical analysis, fixture predictions, and optional TennisStats adapter.
+- `website/training/`: official-source acquisition and chronological training/evaluation.
+- `website/`: data-free portfolio build plus the source of the local-only research interface.
+- `test_pipeline.py` and `website/test*.mjs`: reproducibility and validation checks; some require separately acquired data.
 
-On November 6, 2026 at 14:11 UTC, the v5 production API returned HTTP 200 with `status: ok` and 5,311 records, including 5,120 standard completions. The [EDA page](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site/#eda) showed both counts. All four hashes matched the TennisMyLife downloads. A second production request reused the snapshot and fetch timestamp.
+The public source tree does **not** include raw CSVs, player/match-level exports, archives, model snapshots, or the data-embedded notebook. Provider downloads and generated data are local only. The prior October 22 snapshot and exact October holdout and fixture results cannot be reconstructed from today's provider download unless the original private inputs are available.
 
-The November 5 prediction model uses coefficients fitted before January 1, 2026. In a paired comparison on the same 4,871 held-out matches, adding prior workload to rankings and Elo changed log loss from 0.61351 to 0.61361. The 95% event-bootstrap interval for the difference was −0.00075 to +0.00097. Both players had usable workload data in 1,675 matches.
+## Obtain data directly from the provider
 
-See the [website setup and source map](website/README.md) and [training instructions](website/training/README.md). The original workload study below uses the October 22 snapshot and four October 23 forecasts.
+Review the [TennisMyLife database and its usage terms](https://stats.tennismylife.org/tennis-match-database). Source files are available there for personal, educational, and non-commercial research under its current public terms. Those terms do not authorize redistributing the raw CSVs. Do not publish local snapshots, bundled copies, or row-level outputs. The code here does not grant any new rights to provider data.
 
-- [Website](https://tennis-workload-lab-2026.jiangjerry855.chatgpt.site)
-- [Executed Kaggle notebook](https://www.kaggle.com/code/jerry871gws2/2026-tennis-fatigue-and-win-prediction) (private Kaggle notebook; access may be required)
-- [English research report](reports/Tennis_Fatigue_2026_Report.pdf)
-- [Notebook file](notebooks/tennis_fatigue_2026.ipynb)
+With Python 3.12, from the repository root:
 
-## What is included
-
-| Location | Contents |
-| --- | --- |
-| `raw/` | All four unmodified 2026 source CSVs and their source/hash manifest |
-| `outputs/matches_2026.csv` | 5,054 deduplicated match records with source fields and quality flags |
-| `outputs/` | Player statistics, pre-match features, exclusion reasons, train/validation/test summaries, bootstrap estimates, model parameters, and predictions |
-| `notebooks/` | The executed Kaggle notebook with embedded frozen inputs and outputs |
-| `reports/` | English PDF and original Chinese analytical HTML report |
-| `website/` | Complete English website source, bundled data, browser model and download files |
-| Root Python files | Analysis, forecast generation, TennisStats adapter and validation checks |
-| `docs/` | Original research notes and an upload inventory |
-
-## Data at a glance
-
-| Measure | Count |
-| --- | ---: |
-| Raw source rows | 5,055 |
-| Deduplicated records | 5,054 |
-| Standard completed singles matches | 4,874 |
-| Players represented in completed matches | 732 |
-| Workload-model eligible matches | 1,578 |
-| Training / validation / independent test | 887 / 187 / 174 |
-| Boundary-purged eligible matches | 330 |
-
-The match counts include singles played in team events. Retirements, walkovers and non-standard scores are excluded from the completed-match analysis. The eligible workload sample also requires complete prior event history and pre-match predictors.
-
-## Main result
-
-After adjustment, one additional hour of prior same-event play relative to the opponent was associated with an odds ratio of **0.894** (event-bootstrap 95% interval **0.825-0.984**). This is an association with lower odds, not a causal effect or a 10.6 percentage point decline in win probability.
-
-| Independent test metric | Baseline | Baseline + workload |
-| --- | ---: | ---: |
-| Accuracy | 60.9% | 60.9% |
-| AUC | 0.671 | 0.660 |
-| Log loss (lower is better) | 0.6512 | 0.6572 |
-| Brier score (lower is better) | 0.2297 | 0.2323 |
-
-Workload did **not** provide a reliable improvement in held-out prediction. The log-loss difference was +0.0060, with a 95% interval from -0.0095 to +0.0272. The independent test contains 174 matches from 16 events.
-
-## Run the website
-
-```bash
-cd website
-node prepare-current.mjs
-node build.mjs
-node serve.mjs
-```
-
-Open **http://localhost:8000**. Search/filter match records, view player statistics, inspect every match field, export CSVs, and compare baseline versus workload probabilities. The prediction form requires verified pre-match inputs. Missing workload is not silently imputed.
-
-## Reproduce the analysis
-
-Python 3.12 was used for the repository validation environment. The included executed Kaggle notebook records its own original Python environment.
-
-```bash
+```sh
 python -m venv .venv
-# macOS / Linux
-source .venv/bin/activate
+# Linux/macOS: source .venv/bin/activate
 # Windows PowerShell: .venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python test_pipeline.py
-python analysis.py
-python predict_fixtures.py
-python website/prepare_data.py
+python -m pip install -r requirements.txt
+python website/training/fetch_seasons.py raw --2026-only
 ```
 
-`analysis.py` regenerates local statistical outputs and bootstrap results. `predict_fixtures.py` regenerates the four dated fixture predictions. The frozen inputs are already included, so ordinary reproduction does not require external data downloads. To run the browser inference checks with Node.js:
+This fetches the official ATP and WTA 2026 season and ongoing-event feeds into the ignored `raw/` directory and records URL, retrieval time and SHA-256 for each. You can also download those files directly from the provider page into `raw/` as `2026.csv`, `2026_wta.csv`, `ongoing_tourneys.csv`, and `wta_ongoing_tourneys.csv`. The files can change; use a consistent snapshot and record its retrieval time.
 
-```bash
-node website/test.mjs
-```
-
-Alternatively, import `notebooks/tennis_fatigue_2026.ipynb` into Kaggle and run its cells. The notebook embeds its original frozen dataset. The recorded cloud execution succeeded on CPU in 55.7 seconds; local and cloud metrics agreed to 1e-12.
-
-## Modeling choices and limitations
-
-- Regularized logistic regression uses pre-match rank, age, qualifier status, and rank interactions with tour, surface, best-of-five format and late rounds.
-- The extended model adds prior same-event hours and match-count differences.
-- Only earlier knockout rounds contribute workload. Target-match scores and durations never become predictors.
-- Mirrored training ensures complementary probabilities when the two players are swapped.
-- Source dates mix match dates and tournament start dates. Exact rest intervals are therefore not estimated. A conservative 21-day buffer separates time-based evaluation partitions.
-- Forecasts are conditional on normal completed matches. Injury, travel, sleep, training, doubles and full qualifying workload are not observed.
-- Workload is a proxy for fatigue. Opponent strength and selection effects can confound its association with winning. The test sample is small.
-
-## Sources and API connection
-
-- [TennisMyLife match database and field documentation](https://stats.tennismylife.org/tennis-match-database)
-- [TennisMyLife source repository](https://github.com/Tennismylife/TML-Database)
-- [TennisStats](https://tennisstats.com/) and [official API documentation](https://tennisstats.com/api/documentations)
-
-The official TennisStats demo match and four public fixtures were reconciled with the historical data. Full account-level TennisStats history was not imported. Optional account exports read `TENNISSTATS_API_KEY` from the environment or Kaggle Secrets; no account key is included. The literal `testkey` in the adapter is the provider's public demo key.
-
-Original source terms continue to apply to the raw data; this repository does not grant a new license over third-party records. Review those terms before redistributing data or making a private copy public.
+See [model training](website/training/README.md) for the multi-season workflow and [website documentation](website/README.md) for the data-free build and limits of local reproduction. Optional [TennisStats](https://tennisstats.com/api/documentations) access uses your own credentials; do not commit keys or provider responses.

@@ -1,6 +1,6 @@
 """Build the frozen website data from the validated 2026 research outputs."""
 from pathlib import Path
-import sys, json, shutil, zipfile
+import sys, json, shutil
 import numpy as np
 import pandas as pd
 SITE=Path(__file__).resolve().parent
@@ -49,22 +49,15 @@ def copy(src,name,category,description):
 downloadfiles.append({'name':'matches_2026.csv','category':'Matches','description':'All 5,054 deduplicated records, original fields and quality flags.','bytes':(DOWNLOAD/'matches_2026.csv').stat().st_size})
 for name,desc in [('player_statistics_2026.csv','Player records for standard completed matches.'),('prematch_features.csv','Pre-match features and eligibility for every knockout match.'),('sample_exclusions.csv','Model exclusions with reasons.'),('test_predictions.csv','174 independent test predictions and actual results.'),('upcoming_predictions_2026-10-23.csv','Four frozen fixture forecasts with verified inputs.'),('model_metrics.csv','Independent test metrics for both models.'),('subgroup_metrics.csv','Test metrics by tour.'),('adjusted_associations.csv','Adjusted odds ratios and bootstrap intervals.'),('validation_tuning.csv','Validation metrics for regularization choices.'),('tour_statistics_2026.csv','Tour counts and duration summary.')]:
     copy(SOURCE/'outputs'/name,name,'Analysis',desc)
-for name in ['2026.csv','2026_wta.csv','ongoing_tourneys.csv','wta_ongoing_tourneys.csv']:
-    copy(SOURCE/'raw'/name,'raw_'+name,'Raw source','Unmodified TennisMyLife source snapshot.')
-manifest=json.loads((SOURCE/'raw/manifest.json').read_text())
-(DOWNLOAD/'source_manifest.json').write_text(json.dumps([x for x in manifest if not x['name'].startswith('2025')],indent=2))
-copy(SOURCE/'notebooks/tennis_fatigue_2026.ipynb','tennis_fatigue_2026.ipynb','Reproduce','Executed Kaggle notebook with frozen inputs.')
-copy(SOURCE/'reports/Tennis_Fatigue_2026_Report.pdf','Tennis_Fatigue_2026_Report.pdf','Report','Three-page English research report.')
+
 for name in ['analysis.py','predict_fixtures.py','tennisstats_client.py','test_pipeline.py']:
     copy(SOURCE/name,name,'Code','Reproducible analysis and integration source.')
 for name in ['summary.json','kaggle_summary.json','model_parameters.json','tennisstats_integration.json']:
     copy(SOURCE/'outputs'/name,name,'Analysis','Machine-readable analysis results and provenance.')
 copy(SOURCE/'kaggle_run.json','kaggle_run.json','Reproduce','Verified Kaggle execution record.')
 shutil.copy2(OUT/'models.json',DOWNLOAD/'models.json')
-(DOWNLOAD/'README.txt').write_text('CourtEdge 2026 research snapshot\nData through 2026-10-22. This is not the full 2026 season.\n\nSource: TennisMyLife, https://stats.tennismylife.org/tennis-match-database\nFixtures and API demo: https://tennisstats.com/\nKaggle: https://www.kaggle.com/code/jerry871gws2/2026-tennis-fatigue-and-win-prediction\n\nUse the notebook to reproduce the analysis. models.json contains unscaled coefficients for both final models; probability is sigmoid(sum(feature * coefficient)). Match durations and match counts are prior same-event workload, not direct fatigue measurements. Both players need known prior main-draw history. Predictions are conditional on standard completed matches.\n\nThe raw date field mixes match dates and tournament start dates. Do not derive exact rest time. The whole-source record count is 5,054; standard completed records total 4,874; the eligible model sample is 1,578. The independent test has 174 matches.\n\nKeep this package for private research and observe original source terms before redistributing raw data.\n')
-with zipfile.ZipFile(DOWNLOAD/'CourtEdge_2026_Data.zip','w',zipfile.ZIP_DEFLATED) as z:
-    for path in DOWNLOAD.iterdir():
-        if path.suffix!='.zip': z.write(path,path.name)
+(DOWNLOAD/'README.txt').write_text('CourtEdge 2026 research snapshot\nData through 2026-10-22. This is not the full 2026 season.\n\nSource: TennisMyLife, https://stats.tennismylife.org/tennis-match-database\nFixtures and API demo: https://tennisstats.com/\nKaggle: https://www.kaggle.com/code/jerry871gws2/2026-tennis-fatigue-and-win-prediction\n\nFollow the project README to reproduce the analysis. models.json contains unscaled coefficients for both final models; probability is sigmoid(sum(feature * coefficient)). Match durations and match counts are prior same-event workload, not direct fatigue measurements. Both players need known prior main-draw history. Predictions are conditional on standard completed matches.\n\nThe raw date field mixes match dates and tournament start dates. Do not derive exact rest time. The whole-source record count is 5,054; standard completed records total 4,874; the eligible model sample is 1,578. The independent test has 174 matches.\n\nKeep generated files local and observe the original source terms.\n')
+
 (OUT/'downloads.json').write_text(json.dumps(downloadfiles))
 assert len(d)==5054 and int(d.valid_score.sum())==4874 and len(eligible)==1578
 for _,r in fixtures.iterrows():

@@ -6,6 +6,8 @@
     "snapshot": "node prepare-current.mjs",
     "build": "node build.mjs",
     "start": "node serve.mjs",
-    "test": "node test.mjs && node test-live.mjs && node test-ui.mjs"
+    "test": "node test.mjs && node test-live.mjs && node test-ui.mjs",
+    "build:local": "node build.mjs --local-data",
+    "test:portfolio": "node test-portfolio.mjs"
   }
 }

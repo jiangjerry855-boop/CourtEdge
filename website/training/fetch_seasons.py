@@ -28,9 +28,12 @@ def fetch(name, directory):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("directory", type=Path)
-    directory = parser.parse_args().directory
+    parser.add_argument("--2026-only", action="store_true", dest="season_2026_only", help="Fetch only 2026 season and ongoing feeds.")
+    args = parser.parse_args()
+    directory = args.directory
+    files = [name for name in FILES if not args.season_2026_only or name.startswith("2026") or "ongoing" in name]
     directory.mkdir(parents=True, exist_ok=True)
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
-        manifest = list(pool.map(lambda x: fetch(x, directory), FILES))
+        manifest = list(pool.map(lambda x: fetch(x, directory), files))
     (directory / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print(f"Verified {len(manifest)} source files, {sum(s['bytes'] for s in manifest):,} bytes")

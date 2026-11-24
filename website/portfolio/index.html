@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CourtEdge | Tennis workload research</title>
+<meta name="description" content="A tennis analytics portfolio project testing whether workload improves held-out match prediction.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body><main>
+<header><p class="eyebrow">SPORTS ANALYTICS / RESEARCH PORTFOLIO</p>
+<h1>CourtEdge<span>.</span></h1>
+<p class="lead">Does earlier time on court help predict the next tennis match?</p></header>
+<section aria-labelledby="result"><h2 id="result">The result</h2>
+<p>Adding prior workload to rankings and Elo did not reliably improve held-out predictions. On 4,871 held-out matches, log loss went from <strong>0.61351</strong> to <strong>0.61361</strong> (lower is better). The 95% event-bootstrap interval for the difference was −0.00075 to +0.00097.</p></section>
+<section aria-labelledby="method"><h2 id="method">How it was tested</h2>
+<p>The November 2026 model fit on pre-2026 matches and evaluated on held-out 2026 matches. The comparison uses identical evaluation matches. Workload measures minutes in earlier rounds, not fatigue directly.</p></section>
+<section aria-labelledby="reproduce"><h2 id="reproduce">Code and data access</h2>
+<p>This portfolio does not host match files or data downloads. Use the project’s instructions to obtain source files directly for permitted local research.</p>
+<p class="links"><a href="https://github.com/jiangjerry855-boop/CourtEdge#obtain-data-directly-from-the-provider">Source code and instructions</a><a href="https://stats.tennismylife.org/tennis-match-database">Official data and terms</a></p></section>
+</main></body></html>

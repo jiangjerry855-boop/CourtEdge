@@ -1,4 +1,4 @@
-// Prepare the local fallback snapshot from the same four sources used by the hosted Worker.
+// Prepare the local fallback snapshot from the same four sources used by the private local research server.
 import fs from "node:fs/promises";
 import {createHash} from "node:crypto";
 import {SOURCES, ORIGIN, normalize, analyze, snapshotId} from "./live-data.js";
@@ -19,7 +19,7 @@ const snapshot = {...season, last_success_at: timestamp, last_attempt_at: timest
   last_origin_success_at: null, last_origin_attempt_at: null, error: null, error_stage: null, refresh_seconds: 900,
   sources: sources.map(({text, ...metadata}) => metadata)};
 
-await fs.mkdir("snapshots", {recursive: true});
+for (const dir of ['snapshots', 'dist/data', 'dist/downloads']) await fs.mkdir(dir, {recursive: true});
 await Promise.all(sources.map(source => fs.writeFile("snapshots/" + source.name, source.text)));
 await fs.writeFile("dist/data/eda.json", JSON.stringify(analyze(season.matches)));
 const fields = Object.keys(season.matches[0]);

@@ -1,5 +1,5 @@
 import http from "node:http";
-import worker from "./dist/server/index.js";
+import worker from "./local-build/index.js";
 
 import {localBucket} from "./local-bucket.mjs";
 const env = {BUCKET: localBucket()};
